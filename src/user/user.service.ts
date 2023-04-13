@@ -21,6 +21,8 @@ export class UserService {
   }
 
   async findByKeyword(keyword: any): Promise<UserSchema> {
+    console.log(keyword);
+    
     let user = await this.userRepository.findOne({
       where: [{ idUser: keyword }, { email: keyword }, { phone: keyword }],
     });
@@ -109,7 +111,7 @@ export class UserService {
     let user = await this.findByKeyword(idUser);
     if (user.idUser) {
       if (user.role == 'user') {
-        let activeUserHost = await this.userRepository
+        await this.userRepository
           .createQueryBuilder()
           .update('users')
           .set({ role: 'host' })

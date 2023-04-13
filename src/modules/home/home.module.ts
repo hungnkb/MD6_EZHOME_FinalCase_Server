@@ -9,9 +9,12 @@ import { CategoryProvider } from '../../home/provides/category.provider';
 import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/modules/user/user.module';
 import { UserProvider } from 'src/user/user.provider';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { CloudinaryService, OtherService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
 
 @Module({
-  imports: [DatabaseModule, UserModule],
+  imports: [DatabaseModule, UserModule, CloudinaryModule],
   providers: [
     ...CategoryProvider,
     ...HomeImageProvider,
@@ -20,6 +23,9 @@ import { UserProvider } from 'src/user/user.provider';
     ...UserProvider,
     HomeService,
     UserService,
+    CloudinaryService,
+    ...CloudinaryProvider,
+    OtherService,
   ],
   controllers: [HomeController],
 })
