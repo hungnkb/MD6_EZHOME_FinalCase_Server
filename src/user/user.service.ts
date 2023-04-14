@@ -113,9 +113,8 @@ export class UserService {
             .where({ idUser })
             .execute()
         throw new HttpException('Active host success', HttpStatus.OK)
-      } else {
+      } 
         throw new HttpException('Active host already', HttpStatus.OK)
-      }
     }
   }
 

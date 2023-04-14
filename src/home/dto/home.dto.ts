@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsFile } from 'src/shared/ulti/class-validator/custom-class-validator';
 
 export class CreateHomeDto {
   @IsNotEmpty()
@@ -18,6 +19,10 @@ export class CreateHomeDto {
 
   @IsEmail()
   email: string;
+
+  // @IsFile({ mime: ['image/jpg', 'image/png', 'image/jpeg']})
+  @IsNotEmpty()
+  files: any;
 
   description: string;
   status: boolean;
