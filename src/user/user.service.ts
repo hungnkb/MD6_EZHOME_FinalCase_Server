@@ -4,7 +4,7 @@ import { UserSchema } from "./user.entity";
 import { CreateUserDto, CreateWithGoogleUserDto, UpdateUserDto } from "./user.dto";
 import * as bcrypt from 'bcrypt';
 import * as process from "process";
-const mailer = require('../config/mailer')
+const mailer = require('../shared/ulti/mail/mailer');
 //Thao tác cụ thể dữ liệu db
 export class UserService {
   constructor(
@@ -16,7 +16,7 @@ export class UserService {
     return this.userRepository.find()
   }
 
-  async findByObj(obj: any): Promise<UserSchema | undefined> {
+  async findByKeyword(obj: any): Promise<UserSchema | undefined> {
     let user = await this.userRepository.findOne({
       where: [
         { idUser: obj },
@@ -88,7 +88,7 @@ export class UserService {
   }
 
   async active(query): Promise<any> {
-    let user = await this.findByObj(query.email)
+    let user = await this.findByKeyword(query.email)
     if (user.active) {
       throw new HttpException('Already active', HttpStatus.OK)
     }
@@ -103,7 +103,7 @@ export class UserService {
   }
 
   async activeHost({ idUser }): Promise<any> {
-    let user = await this.findByObj(idUser)
+    let user = await this.findByKeyword(idUser)
     if (user.idUser) {
       if (user.role == 'user') {
         let activeUserHost = await this.userRepository
@@ -123,7 +123,7 @@ export class UserService {
     if(!body.email){
       throw new HttpException('INsert your email', HttpStatus.BAD_REQUEST)
     } else {
-      let user = await this.findByObj(body.email)
+      let user = await this.findByKeyword(body.email)
       bcrypt.hash(user.email, parseInt(process.env.BCRYPT_SALT_ROUND)).then((hashedEmail) => {
         mailer.sendMail(user.email, "Reset password", `<a href="http://localhost:3000/reset-password?email=${user.email}&token=${hashedEmail}"> Reset Password </a>`)
         console.log(`${process.env.APP_URL}/password/reset/${user.email}?token=${hashedEmail}`);

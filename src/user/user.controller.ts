@@ -10,7 +10,7 @@ export class UserController {
   @Get()
   findAll(@Query() query): Promise<any> {
     if (query.obj) {
-      return this.userService.findByObj(query.obj)
+      return this.userService.findByKeyword(query.obj)
     }
     return this.userService.findAll()
   }
