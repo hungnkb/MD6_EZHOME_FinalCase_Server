@@ -86,23 +86,21 @@ export class AuthService {
     throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
   }
 
-  async verifyToken(accessToken: string): Promise<Object> {
-    try {
-      const payload = await this.jwtService.verifyAsync(accessToken, {
-        secret: jwtConstants.secret,
-      });
-      return payload;
-    } catch {
-      throw new UnauthorizedException();
-    }
-  }
+  // async getProfile(accessToken: string): Promise<Object> {
+  //   const payload = await this.jwtService.verify(accessToken, {
+  //     secret: jwtConstants.secret,
+  //   });
+  //   return req;
+  // }
 
   async returnAccessToken(payload: Object): Promise<Object> {
     return { accessToken: this.assignToken(payload) };
   }
 
-  assignToken(payload: Object): Promise<string> {
-    return this.jwtService.signAsync(payload);
+  async assignToken(payload: Object): Promise<string> {
+    const token = await this.jwtService.signAsync(payload);
+    const bearerToken = 'Bearer ' + token;
+    return bearerToken;
   }
 
   async verifyPassword(

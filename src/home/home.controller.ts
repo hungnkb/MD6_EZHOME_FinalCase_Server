@@ -1,10 +1,21 @@
-import { Body, Controller, Get, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { HomeService } from './home.service';
-import { FilesInterceptor, AnyFilesInterceptor } from '@nestjs/platform-express';
+import {
+  FilesInterceptor,
+  AnyFilesInterceptor,
+} from '@nestjs/platform-express';
 
 @Controller()
 export class HomeController {
-  constructor(private readonly homeService: HomeService) { }
+  constructor(private readonly homeService: HomeService) {}
 
   @Post()
   create(@Body() body: any): Promise<any> {
@@ -21,6 +32,6 @@ export class HomeController {
   @Post('image')
   @UseInterceptors(AnyFilesInterceptor())
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
-    return this.homeService.uploadImage(files)
-  }  
+    return this.homeService.uploadImage(files);
+  }
 }

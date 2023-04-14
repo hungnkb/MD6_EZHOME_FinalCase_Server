@@ -10,7 +10,10 @@ import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/modules/user/user.module';
 import { UserProvider } from 'src/user/user.provider';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
-import { CloudinaryService, OtherService } from 'src/cloudinary/cloudinary.service';
+import {
+  CloudinaryService,
+  OtherService,
+} from 'src/cloudinary/cloudinary.service';
 import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
 
 @Module({
@@ -29,4 +32,4 @@ import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
   ],
   controllers: [HomeController],
 })
-export class HomeModule { }
+export class HomeModule {}

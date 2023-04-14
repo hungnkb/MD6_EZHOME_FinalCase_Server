@@ -4,7 +4,10 @@ import { UserSchema } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { HomeSchema } from './entities/home.entity';
-import { CloudinaryService, OtherService } from 'src/cloudinary/cloudinary.service';
+import {
+  CloudinaryService,
+  OtherService,
+} from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class HomeService {
@@ -18,7 +21,7 @@ export class HomeService {
 
   async create(body: CreateHomeDto): Promise<Object> {
     console.log(body);
-    
+
     const {
       title,
       price,
@@ -31,10 +34,9 @@ export class HomeService {
       files,
     } = body;
     console.log('files', files);
-    
-    
+
     let user = await this.userService.findByKeyword(email);
-    
+
     if (!user || user.role != 'host') {
       throw new HttpException('Unauthorized', HttpStatus.BAD_REQUEST);
     }
@@ -42,16 +44,11 @@ export class HomeService {
     let newFiles: object[];
 
     // for (let i=0; i < files.length; i++) {
-      
+
     //   if (newFile) {newFiles.push(newFile)}
     // }
-    let newFile = await this.cloudinaryService.uploadImage(files[0])
-    console.log(3333, newFile);
-    
-    console.log(1111, files);
-    
-    console.log(2222,newFiles);
-    
+    let newFile = await this.cloudinaryService.uploadImage(files[0]);
+
     let newHome = await this.homeRepository
       .createQueryBuilder()
       .insert()
@@ -73,11 +70,13 @@ export class HomeService {
 
   async uploadImage(files: Array<Express.Multer.File>): Promise<Object> {
     let newFiles = [];
-     for (let i=0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       let newFile = await this.cloudinaryService.uploadImage(files[i]);
-      if (newFile) {newFiles.push(newFile)}; // thêm cập nhật db
+      if (newFile) {
+        newFiles.push(newFile);
+      } // thêm cập nhật db
     }
-    return newFiles
+    return newFiles;
   }
 
   async findByKeyword(keyword): Promise<HomeSchema[] | undefined> {

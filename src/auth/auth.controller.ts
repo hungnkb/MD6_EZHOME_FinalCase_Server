@@ -1,6 +1,16 @@
-import { Post, Body, Controller, Options, Put } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Controller,
+  Patch,
+  Put,
+  UseGuards,
+  Request,
+  Get,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateWithGoogleUserDto, changePasswordDto } from 'src/user/user.dto';
+import { AuthGuard } from './auth.guard';
 
 @Controller()
 export class AuthController {
@@ -11,9 +21,10 @@ export class AuthController {
     return this.authService.login(body);
   }
 
-  @Options()
-  verifyToken(@Body() body: any): any {
-    return this.authService.verifyToken(body.accessToken);
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
 
   @Put()

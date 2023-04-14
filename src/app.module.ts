@@ -43,4 +43,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   controllers: [AppController],
   providers: [HealthCheckService, CloudinaryService],
 })
-export class AppModule { }
+export class AppModule {}

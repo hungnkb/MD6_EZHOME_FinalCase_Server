@@ -26,4 +26,4 @@ import { UserSchema } from 'src/user/user.entity';
   controllers: [AuthController],
   providers: [AuthService, UserService, ...databaseProviders, ...UserProvider],
 })
-export class AuthModule { }
+export class AuthModule {}
