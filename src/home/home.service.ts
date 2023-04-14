@@ -20,8 +20,6 @@ export class HomeService {
   ) {}
 
   async create(body: CreateHomeDto): Promise<Object> {
-    console.log(body);
-
     const {
       title,
       price,
@@ -83,7 +81,7 @@ export class HomeService {
     if (keyword.idUser) {
       return this.findByIdUser(keyword.idUser);
     } else if (keyword.idHome) {
-      return this.findByIdHome(keyword.idHome);
+      return this.findByIdHome(keyword.idHome); 
     }
     return this.findAll();
   }
@@ -114,8 +112,10 @@ export class HomeService {
         'users.email',
         'users.phone',
         'users.image',
+        'categories.categoryName',
       ])
       .leftJoin('homes.idUser', 'users')
+      .leftJoin('homes.idCategory', 'categories')
       .where('homes.idUser = :id', { id: idUser })
       .getMany();
   }
