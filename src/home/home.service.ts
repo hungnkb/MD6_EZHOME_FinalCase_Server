@@ -31,7 +31,6 @@ export class HomeService {
       idCategory,
       files,
     } = body;
-    console.log('files', files);
 
     let user = await this.userService.findByKeyword(email);
 
@@ -133,5 +132,16 @@ export class HomeService {
       .leftJoin('homes.idUser', 'users.idUser')
       .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
       .getMany();
+  }
+
+  async updateStatus(idHome: number, status: boolean) {
+    return this.homeRepository
+    .createQueryBuilder()
+    .update(HomeSchema)
+    .set({
+      status
+    })
+    .where("idHome = :id", {id: idHome})
+    .execute()
   }
 }

@@ -39,4 +39,10 @@ export class HomeController {
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
     return this.homeService.uploadImage(files);
   }
+
+  @Post('status')
+  updateStatus(@Body() body: any): Promise<any> {
+    return this.homeService.updateStatus(body.idHome, body.status);
+  }
+
 }
