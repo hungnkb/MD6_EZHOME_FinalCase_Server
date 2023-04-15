@@ -20,8 +20,6 @@ export class HomeService {
   ) {}
 
   async create(body: CreateHomeDto): Promise<Object> {
-    console.log(body);
-
     const {
       title,
       price,
@@ -33,7 +31,6 @@ export class HomeService {
       idCategory,
       files,
     } = body;
-    console.log('files', files);
 
     let user = await this.userService.findByKeyword(email);
 
@@ -114,8 +111,10 @@ export class HomeService {
         'users.email',
         'users.phone',
         'users.image',
+        'categories.categoryName',
       ])
       .leftJoin('homes.idUser', 'users')
+      .leftJoin('homes.idCategory', 'categories')
       .where('homes.idUser = :id', { id: idUser })
       .getMany();
   }
@@ -133,5 +132,16 @@ export class HomeService {
       .leftJoin('homes.idUser', 'users.idUser')
       .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
       .getMany();
+  }
+
+  async updateStatus(idHome: number, status: boolean) {
+    return this.homeRepository
+    .createQueryBuilder()
+    .update(HomeSchema)
+    .set({
+      status
+    })
+    .where("idHome = :id", {id: idHome})
+    .execute()
   }
 }
