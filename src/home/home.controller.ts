@@ -22,8 +22,6 @@ export class HomeController {
 
   @Post()
   create(@Body() body: any): Promise<any> {
-    console.log(123123, body);
-
     return this.homeService.create(body);
   }
 
@@ -40,6 +38,7 @@ export class HomeController {
     return this.homeService.uploadImage(files);
   }
 
+  @UseGuards(AuthGuard)
   @Post('status')
   updateStatus(@Body() body: any): Promise<any> {
     return this.homeService.updateStatus(body.idHome, body.status);
