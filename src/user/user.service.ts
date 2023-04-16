@@ -35,7 +35,6 @@ export class UserService {
       let { password, email, phone } = body;
       const saltOrRounds = 10;
       const hashPassword = await bcrypt.hash(password, saltOrRounds);
-      console.log(hashPassword);
       let newUser = await this.userRepository.save({
         password: hashPassword,
         email,
@@ -45,7 +44,6 @@ export class UserService {
         bcrypt
           .hash(newUser.email, parseInt(process.env.BCRYPT_SALT_ROUND))
           .then((hashedEmail) => {
-            console.log(newUser.email);
             mailer.sendMail(
               newUser.email,
               'Xin Chào,Hãy xác thực tài khoản EZHome 0.1',
@@ -67,7 +65,6 @@ export class UserService {
       .into('users')
       .values({ email })
       .execute();
-    console.log(newUser);
 
     if (newUser) {
       return newUser;
@@ -135,11 +132,7 @@ export class UserService {
             'Reset password',
             `<a href="http://localhost:3000/reset-password?email=${user.email}&token=${hashedEmail}"> Reset Password </a>`,
           );
-          console.log(
-            `${process.env.APP_URL}/password/reset/${user.email}?token=${hashedEmail}`,
-          );
         });
-      console.log(user);
     }
   }
 
@@ -152,7 +145,7 @@ export class UserService {
           .createQueryBuilder()
           .update('users')
           .set({ password: hashPassword })
-          .where({ email: email })
+          .where({ email })
           .execute();
       }
       throw new HttpException('Change password success', HttpStatus.OK);

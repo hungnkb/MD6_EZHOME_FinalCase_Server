@@ -3,7 +3,6 @@ import {
   HttpStatus,
   Inject,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
@@ -12,7 +11,9 @@ import { jwtConstants } from './constants';
 import { CreateWithGoogleUserDto, changePasswordDto } from 'src/user/user.dto';
 import { Repository } from 'typeorm';
 import { UserSchema } from 'src/user/user.entity';
-//Thao tác câu lệnh với database
+import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
+const mailer = require('../shared/ulti/mail/mailer');
 export type User = any;
 
 @Injectable()
@@ -22,7 +23,8 @@ export class AuthService {
     private jwtService: JwtService,
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserSchema>,
-  ) {}
+    private configService: ConfigService,
+  ) { }
 
   async login(body): Promise<Object> {
     const { email, password } = body;
@@ -56,7 +58,9 @@ export class AuthService {
           sub: user.idUser,
           active: user.active,
         };
-        return this.returnAccessToken(payload);
+        let accessToken = await this.assignToken(payload)
+
+        return { accessToken };
       }
     } catch {
       let newUser = await this.userService.createWithGoogle(body);
@@ -68,7 +72,18 @@ export class AuthService {
           sub: returnUser.idUser,
           active: returnUser.active,
         };
-        return this.returnAccessToken(payload);
+        
+        bcrypt
+          .hash(returnUser.email, parseInt(this.configService.get('BCRYPT_SALT_ROUND')))
+          .then((hashedEmail) => {
+            mailer.sendMail(
+              returnUser.email,
+              'Xin Chào,Hãy xác thực tài khoản EZHome 0.1',
+              `<a href="http://localhost:3002/api/v1/users/active?email=${returnUser.email}&token=${hashedEmail}"> Verify </a>`,
+            );
+          });
+        let accessToken = await this.assignToken(payload)
+        return { accessToken };
       }
     }
   }
