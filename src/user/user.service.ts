@@ -79,14 +79,12 @@ export class UserService {
     if (!user) {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
     }
-
     let newUser = await this.userRepository
       .createQueryBuilder()
       .update(UserSchema)
       .set({ phone, fullName, address, role })
       .where({ idUser: user.idUser })
       .execute();
-
     return newUser;
   }
 
@@ -148,7 +146,27 @@ export class UserService {
           .where({ email })
           .execute();
       }
-      throw new HttpException('Change password success', HttpStatus.OK);
+      throw new HttpException('Reset password success', HttpStatus.OK);
     });
   }
+
+  async changePassword(body): Promise<any> {
+    const { oldPassword, newPassword, email } = body;
+    const hashNewPassword = await bcrypt.hash(newPassword, 10);
+    let user = await this.findByKeyword(email)
+    let isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (isMatch){
+      let activeUser = await this.userRepository
+        .createQueryBuilder()
+        .update('users')
+        .set({ password: hashNewPassword })
+        .where({ email: email })
+        .execute();
+      throw new HttpException('Change password success', HttpStatus.OK);
+    } else {
+      throw new HttpException('Incorrect password', HttpStatus.BAD_REQUEST);
+    }
+  }
 }
+
+
