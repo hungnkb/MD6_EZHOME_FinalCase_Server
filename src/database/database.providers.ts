@@ -20,6 +20,7 @@ export const databaseProviders = [
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [
+          ReviewSchema,
           UserSchema,
           HomeSchema,
           HomeImageSchema,
@@ -27,6 +28,8 @@ export const databaseProviders = [
           ReviewSchema,
         ],
         synchronize: false,
+        migrations: ['dist/migrations/*.js'],
+        migrationsRun: true
       });
 
       return dataSource.initialize();

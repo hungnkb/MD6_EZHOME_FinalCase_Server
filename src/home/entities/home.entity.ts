@@ -5,8 +5,10 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { CategorySchema } from './category.entity';
+import { HomeImageSchema } from './homeImage.entity';
 
 @Entity({ name: 'homes' })
 export class HomeSchema {
@@ -36,6 +38,10 @@ export class HomeSchema {
 
   @Column({ default: true })
   status: boolean;
+
+  @OneToMany((type) => HomeImageSchema, (homeimages) => homeimages.idHome)
+  @JoinColumn({name: 'images', referencedColumnName: 'idHome'})
+  images: HomeImageSchema[];
 
   @ManyToOne((type) => UserSchema, (users) => users.idUser)
   @JoinColumn({ name: 'idUser', referencedColumnName: 'idUser' })

@@ -4,24 +4,21 @@ import { UserSchema } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { HomeSchema } from './entities/home.entity';
-import {
-  CloudinaryService,
-  OtherService,
-} from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { HomeImageSchema } from './entities/homeImage.entity';
 
 @Injectable()
 export class HomeService {
   constructor(
     @Inject('HOME_REPOSITORY')
     private homeRepository: Repository<HomeSchema>,
+    @Inject('HOMEIMAGE_REPOSITORY')
+    private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
-    private imageService: OtherService,
     private cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   async create(body: CreateHomeDto): Promise<Object> {
-    console.log(body);
-
     const {
       title,
       price,
@@ -33,21 +30,12 @@ export class HomeService {
       idCategory,
       files,
     } = body;
-    console.log('files', files);
 
     let user = await this.userService.findByKeyword(email);
 
     if (!user || user.role != 'host') {
       throw new HttpException('Unauthorized', HttpStatus.BAD_REQUEST);
     }
-
-    let newFiles: object[];
-
-    // for (let i=0; i < files.length; i++) {
-
-    //   if (newFile) {newFiles.push(newFile)}
-    // }
-    let newFile = await this.cloudinaryService.uploadImage(files[0]);
 
     let newHome = await this.homeRepository
       .createQueryBuilder()
@@ -65,6 +53,18 @@ export class HomeService {
       })
       .execute();
 
+    for (let i = 0; i < files.length; i++) {
+      this.homeImageRepository
+      .createQueryBuilder()
+      .insert()
+      .into(HomeImageSchema)
+      .values({
+        urlHomeImage: files[i],
+        idHome: newHome.identifiers[0].idHome,
+      })
+      .execute()
+    };
+
     return newHome;
   }
 
@@ -74,7 +74,7 @@ export class HomeService {
       let newFile = await this.cloudinaryService.uploadImage(files[i]);
       if (newFile) {
         newFiles.push(newFile);
-      } // thêm cập nhật db
+      }
     }
     return newFiles;
   }
@@ -83,7 +83,7 @@ export class HomeService {
     if (keyword.idUser) {
       return this.findByIdUser(keyword.idUser);
     } else if (keyword.idHome) {
-      return this.findByIdHome(keyword.idHome);
+      return this.findByIdHome(keyword.idHome); 
     }
     return this.findAll();
   }
@@ -101,6 +101,7 @@ export class HomeService {
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
+      .leftJoin('homeimages.urlHomeImage', 'homeimages')
       .where('idHome = :id', { id: idHome })
       .getMany();
   }
@@ -114,8 +115,10 @@ export class HomeService {
         'users.email',
         'users.phone',
         'users.image',
+        'categories.categoryName',
       ])
       .leftJoin('homes.idUser', 'users')
+      .leftJoin('homes.idCategory', 'categories')
       .where('homes.idUser = :id', { id: idUser })
       .getMany();
   }
@@ -133,5 +136,16 @@ export class HomeService {
       .leftJoin('homes.idUser', 'users.idUser')
       .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
       .getMany();
+  }
+
+  async updateStatus(idHome: number, status: boolean) {
+    return this.homeRepository
+      .createQueryBuilder()
+      .update(HomeSchema)
+      .set({
+        status
+      })
+      .where("idHome = :id", { id: idHome })
+      .execute()
   }
 }

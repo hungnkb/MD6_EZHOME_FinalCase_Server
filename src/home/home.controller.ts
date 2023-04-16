@@ -4,7 +4,9 @@ import {
   Get,
   Post,
   Query,
+  Request,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { HomeService } from './home.service';
@@ -12,6 +14,7 @@ import {
   FilesInterceptor,
   AnyFilesInterceptor,
 } from '@nestjs/platform-express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 export class HomeController {
@@ -19,13 +22,13 @@ export class HomeController {
 
   @Post()
   create(@Body() body: any): Promise<any> {
-    console.log(123123, body);
-
     return this.homeService.create(body);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  findByObj(@Query() query: any): Promise<any> {
+  findByKeyword(@Query() query: any, @Request() req): Promise<any> {
+    console.log(query, req)
     return this.homeService.findByKeyword(query);
   }
 
@@ -33,5 +36,11 @@ export class HomeController {
   @UseInterceptors(AnyFilesInterceptor())
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
     return this.homeService.uploadImage(files);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('status')
+  updateStatus(@Body() body: any): Promise<any> {
+    return this.homeService.updateStatus(body.idHome, body.status);
   }
 }
