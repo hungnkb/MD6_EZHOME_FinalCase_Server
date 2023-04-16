@@ -83,7 +83,7 @@ export class HomeService {
     if (keyword.idUser) {
       return this.findByIdUser(keyword.idUser);
     } else if (keyword.idHome) {
-      return this.findByIdHome(keyword.idHome); 
+      return this.findByIdHome(keyword.idHome);
     }
     return this.findAll();
   }

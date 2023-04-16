@@ -26,10 +26,8 @@ export class HomeController {
     return this.homeService.create(body);
   }
 
-  @UseGuards(AuthGuard)
   @Get()
   findByKeyword(@Query() query: any, @Request() req): Promise<any> {
-    console.log(query, req)
     return this.homeService.findByKeyword(query);
   }
 
