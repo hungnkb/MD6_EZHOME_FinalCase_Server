@@ -30,7 +30,7 @@ export class HomeSchema {
   @Column({ nullable: false })
   bedrooms: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'longtext' })
   description: string;
 
   @Column({ nullable: true })

@@ -6,8 +6,6 @@ import { ReviewSchema } from "src/home/entities/review.entity";
 import { UserSchema } from "src/user/user.entity";
 import { DataSource, DataSourceOptions } from "typeorm";
 
-const configService = new ConfigService();
-
 export const dataSourceOptions: DataSourceOptions = {
     type: 'mysql',
     host: 'localhost',
@@ -24,7 +22,6 @@ export const dataSourceOptions: DataSourceOptions = {
         ReviewSchema,
     ],
     migrations: ['dist/migrations/*.js'],
-    synchronize: true
 };
 
 const dataSource = new DataSource(dataSourceOptions);
