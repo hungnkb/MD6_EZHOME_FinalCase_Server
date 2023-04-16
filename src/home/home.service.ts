@@ -96,13 +96,13 @@ export class HomeService {
         'users.idUser',
         'users.email',
         'users.phone',
-        'users.image',
         'categories.categoryName',
+        'homeImages.urlHomeImage',
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
-      .leftJoin('homeimages.urlHomeImage', 'homeimages')
-      .where('idHome = :id', { id: idHome })
+      .leftJoin('homes.images', 'homeImages')
+      .where('homes.idHome = :id', { id: idHome })
       .getMany();
   }
 
@@ -114,11 +114,12 @@ export class HomeService {
         'users.idUser',
         'users.email',
         'users.phone',
-        'users.image',
         'categories.categoryName',
+        'homeImages.urlHomeImage',
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
+      .leftJoin('homes.images', 'homeImages')
       .where('homes.idUser = :id', { id: idUser })
       .getMany();
   }
@@ -132,9 +133,11 @@ export class HomeService {
         'users.idUser.email',
         'users.idUser.phone',
         'users.idUser.image',
+        'homeImages.urlHomeImage',
       ])
       .leftJoin('homes.idUser', 'users.idUser')
       .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
+      .leftJoin('homes.images', 'homeImages')
       .getMany();
   }
 

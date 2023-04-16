@@ -19,6 +19,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
   create(@Body() body: any): Promise<any> {
     return this.homeService.create(body);
