@@ -75,6 +75,7 @@ export class UserService {
 
   async update(body: UpdateUserDto): Promise<any> {
     let { email, phone, fullName, address, role } = body;
+    
     let user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
