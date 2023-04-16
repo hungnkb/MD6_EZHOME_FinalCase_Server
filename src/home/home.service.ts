@@ -101,6 +101,7 @@ export class HomeService {
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
+      .leftJoin('homeimages.urlHomeImage', 'homeimages')
       .where('idHome = :id', { id: idHome })
       .getMany();
   }
