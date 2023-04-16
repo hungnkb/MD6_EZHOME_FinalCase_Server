@@ -40,5 +40,4 @@ export class HomeController {
   updateStatus(@Body() body: any): Promise<any> {
     return this.homeService.updateStatus(body.idHome, body.status);
   }
-
 }
