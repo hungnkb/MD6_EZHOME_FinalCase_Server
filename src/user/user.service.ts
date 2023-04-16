@@ -1,4 +1,4 @@
-import { Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Inject, HttpException, HttpStatus, Redirect } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { UserSchema } from './user.entity';
 import {
@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserSchema>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<UserSchema[] | undefined> {
     return this.userRepository.find();
@@ -93,9 +93,7 @@ export class UserService {
 
   async active(query): Promise<any> {
     let user = await this.findByKeyword(query.email);
-    if (user.active) {
-      throw new HttpException('Already active', HttpStatus.OK);
-    }
+
     let activeUser = await this.userRepository
       .createQueryBuilder()
       .update('users')
@@ -103,7 +101,7 @@ export class UserService {
       .where({ email: query.email })
       .execute();
 
-    throw new HttpException('Active success', HttpStatus.OK);
+    return;
   }
 
   async activeHost({ idUser }): Promise<any> {

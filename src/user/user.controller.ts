@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Post, Query, Param } from '@nestjs/common';
+import { Body, Controller, Get, Put, Post, Query, Param, Redirect } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { UserSchema } from './user.entity';
@@ -26,6 +26,7 @@ export class UserController {
   }
 
   @Get('/active')
+  @Redirect('http://localhost:3000/')
   active(@Query() query: any): Promise<any> {
     return this.userService.active(query);
   }
