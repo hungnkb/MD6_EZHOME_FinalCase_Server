@@ -82,14 +82,12 @@ export class UserService {
     if (!user) {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
     }
-
     let newUser = await this.userRepository
       .createQueryBuilder()
       .update(UserSchema)
       .set({ phone, fullName, address })
       .where({ idUser: user.idUser })
       .execute();
-
     return newUser;
   }
 
