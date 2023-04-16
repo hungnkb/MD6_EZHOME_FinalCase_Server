@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Query,
+  Request,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -25,8 +26,10 @@ export class HomeController {
     return this.homeService.create(body);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  findByObj(@Query() query: any): Promise<any> {
+  findByKeyword(@Query() query: any, @Request() req): Promise<any> {
+    console.log(query, req)
     return this.homeService.findByKeyword(query);
   }
 
