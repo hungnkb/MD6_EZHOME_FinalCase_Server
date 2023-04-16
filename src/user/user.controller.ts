@@ -9,8 +9,9 @@ export class UserController {
 
   @Get()
   findAll(@Query() query): Promise<any> {
-    if (query.obj) {
-      return this.userService.findByKeyword(query.obj);
+    console.log(query.email);
+    if (query.email) {
+      return this.userService.findByKeyword(query.email);
     }
     return this.userService.findAll();
   }
