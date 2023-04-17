@@ -2,8 +2,10 @@ import {
     Body,
     Controller,
     Get,
+    Param,
     Patch,
     Post,
+    Query,
 } from '@nestjs/common';
 import { CreateOrderDto } from 'src/order/order.dto';
 import { OrderService } from './order.service';
@@ -19,13 +21,18 @@ export class OrderController {
         return this.orderService.create(body);
     }
 
+    // @Get()
+    // getOrders(): Promise<any> {
+    //     return this.orderService.findAll();
+    // }
+
     @Get()
-    getOrders(): Promise<any> {
-        return this.orderService.findAll();
+    getOrderByKeyword(@Query() keyword: string): Promise<any> {
+        return this.orderService.findByKeyword(keyword);
     }
 
-    @Patch()
-    updateStatus(): Promise<any> {
-        return
+    @Patch(':idOrder')
+    updateStatus(@Param() param, @Query() query): Promise < any > {
+        return this.orderService.updateOrderStatus(param.idOrder, query.status)
     }
 }
