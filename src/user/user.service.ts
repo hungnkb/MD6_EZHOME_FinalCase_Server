@@ -9,7 +9,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import * as process from 'process';
 const mailer = require('../shared/ulti/mail/mailer');
-//Thao tác cụ thể dữ liệu db
+
 export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
