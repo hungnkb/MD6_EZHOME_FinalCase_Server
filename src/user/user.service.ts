@@ -75,6 +75,7 @@ export class UserService {
 
   async update(body: UpdateUserDto): Promise<any> {
     let { email, phone, fullName, address, role } = body;
+    
     let user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
@@ -152,10 +153,24 @@ export class UserService {
 
   async changePassword(body): Promise<any> {
     const { oldPassword, newPassword, email } = body;
-    const hashNewPassword = await bcrypt.hash(newPassword, 10);
-    let user = await this.findByKeyword(email)
-    let isMatch = await bcrypt.compare(oldPassword, user.password);
-    if (isMatch){
+    if (oldPassword != ""){
+      const hashNewPassword = await bcrypt.hash(newPassword, 10);
+      let user = await this.findByKeyword(email)
+      let isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (isMatch){
+        let activeUser = await this.userRepository
+          .createQueryBuilder()
+          .update('users')
+          .set({ password: hashNewPassword })
+          .where({ email: email })
+          .execute();
+        throw new HttpException('Change password success', HttpStatus.OK);
+      } else {
+        throw new HttpException('Incorrect password', HttpStatus.BAD_REQUEST);
+      }
+    } else {
+      const hashNewPassword = await bcrypt.hash(newPassword, 10);
+      let user = await this.findByKeyword(email)
       let activeUser = await this.userRepository
         .createQueryBuilder()
         .update('users')
@@ -163,8 +178,6 @@ export class UserService {
         .where({ email: email })
         .execute();
       throw new HttpException('Change password success', HttpStatus.OK);
-    } else {
-      throw new HttpException('Incorrect password', HttpStatus.BAD_REQUEST);
     }
   }
 }
