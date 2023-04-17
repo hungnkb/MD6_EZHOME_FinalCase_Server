@@ -45,4 +45,10 @@ export class UserController {
   resetpassword(@Body() body: any): Promise<any> {
     return this.userService.resetpassword(body);
   }
+
+  @Post('/change-password')
+  changePassword(@Body() body: any): Promise<any> {
+    console.log(body);
+    return this.userService.changePassword(body);
+  }
 }

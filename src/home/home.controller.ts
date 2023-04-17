@@ -20,15 +20,15 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class HomeController {
   constructor(private readonly homeService: HomeService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
   create(@Body() body: any): Promise<any> {
     return this.homeService.create(body);
   }
 
   @Get()
-  findAll(): Promise<any> {
-
-    return this.homeService.findAll();
+  findByKeyword(@Query() query: any, @Request() req): Promise<any> {
+    return this.homeService.findByKeyword(query);
   }
 
   @Post('image')
