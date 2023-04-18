@@ -98,10 +98,13 @@ export class HomeService {
         'users.phone',
         'categories.categoryName',
         'homeImages.urlHomeImage',
+        'orders.checkin',
+        'orders.checkout',
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
       .leftJoin('homes.images', 'homeImages')
+      .leftJoin('homes.orders', 'orders')
       .where('homes.idHome = :id', { id: idHome })
       .getMany();
   }
@@ -121,6 +124,8 @@ export class HomeService {
       .leftJoin('homes.idCategory', 'categories')
       .leftJoin('homes.images', 'homeImages')
       .where('homes.idUser = :id', { id: idUser })
+      .leftJoinAndSelect('homes.orders', 'orders')
+      .leftJoinAndSelect('orders.idUser', 'customers')
       .getMany();
   }
 

@@ -10,14 +10,11 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { HomeModule } from './modules/home/home.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
-    DatabaseModule,
-    UserModule,
-    AuthModule,
-    HomeModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+      ConfigModule.forRoot({ isGlobal: true }),
     RouterModule.register([
       {
         path: 'api/v1/',
@@ -34,11 +31,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             path: 'homes',
             module: HomeModule,
           },
+          {
+            path: 'orders',
+            module: OrderModule,
+          }
         ],
       },
     ]),
-    CloudinaryModule,
+    DatabaseModule,
+    UserModule,
+    AuthModule,
     HomeModule,
+    OrderModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [HealthCheckService, CloudinaryService],

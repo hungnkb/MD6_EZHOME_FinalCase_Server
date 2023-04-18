@@ -9,6 +9,8 @@ import {
 } from 'typeorm';
 import { CategorySchema } from './category.entity';
 import { HomeImageSchema } from './homeImage.entity';
+import { OrderSchema } from '../../order/order.entity';
+import { ReviewSchema } from './review.entity';
 
 @Entity({ name: 'homes' })
 export class HomeSchema {
@@ -39,15 +41,23 @@ export class HomeSchema {
   @Column({ default: true })
   status: boolean;
 
-  @OneToMany((type) => HomeImageSchema, (homeimages) => homeimages.idHome)
-  @JoinColumn({name: 'images', referencedColumnName: 'idHome'})
+  @OneToMany(type => HomeImageSchema, homeimages => homeimages.idHome)
+  @JoinColumn({ name: 'images', referencedColumnName: 'idHome' })
   images: HomeImageSchema[];
 
-  @ManyToOne((type) => UserSchema, (users) => users.idUser)
+  @OneToMany(type => OrderSchema, orders => orders.idHome)
+  @JoinColumn({ name: 'orders', referencedColumnName: 'idHome' })
+  orders: OrderSchema[];
+
+  @OneToMany(type => ReviewSchema, reviews => reviews.idHome)
+  @JoinColumn({ name: 'reviews', referencedColumnName: 'idHome' })
+  reviews: ReviewSchema[];
+
+  @ManyToOne(type => UserSchema, users => users.idUser)
   @JoinColumn({ name: 'idUser', referencedColumnName: 'idUser' })
   idUser: number;
 
-  @ManyToOne((type) => CategorySchema, (categories) => categories.idCategory)
+  @ManyToOne(type => CategorySchema, categories => categories.idCategory)
   @JoinColumn({ name: 'idCategory', referencedColumnName: 'idCategory' })
   idCategory: number;
 }

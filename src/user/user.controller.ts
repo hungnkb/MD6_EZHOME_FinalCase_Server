@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Put, Post, Query, Param, Redirect } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
-import { UserSchema } from './user.entity';
 
 @Controller()
 export class UserController {
@@ -9,7 +8,6 @@ export class UserController {
 
   @Get()
   findAll(@Query() query): Promise<any> {
-    console.log(query.email);
     if (query.email) {
       return this.userService.findByKeyword(query.email);
     }
@@ -23,6 +21,7 @@ export class UserController {
 
   @Put()
   update(@Body() body: UpdateUserDto): Promise<any> {
+    console.log(body)
     return this.userService.update(body);
   }
 

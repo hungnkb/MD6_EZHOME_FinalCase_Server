@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { OrderSchema } from 'src/order/order.entity';
+import { ReviewSchema } from 'src/home/entities/review.entity';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum UserRole {
   _ADMIN = 'admin',
@@ -41,4 +43,12 @@ export class UserSchema {
     default: UserRole._USER,
   })
   role: UserRole;
+
+  @OneToMany(type => OrderSchema, orders => orders.idOrder)
+  @JoinColumn({ name: 'orders', referencedColumnName: 'idOrder' })
+  orders: OrderSchema[];
+
+  @OneToMany(type => ReviewSchema, reviews => reviews.idReview)
+  @JoinColumn({ name: 'reviews', referencedColumnName: 'idReview' })
+  reviews: ReviewSchema[];
 }

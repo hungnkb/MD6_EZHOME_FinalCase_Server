@@ -6,6 +6,7 @@ import { UserSchema } from 'src/user/user.entity';
 import { DataSource } from 'typeorm';
 import 'reflect-metadata';
 import { ReviewSchema } from 'src/home/entities/review.entity';
+import { OrderSchema } from 'src/order/order.entity';
 
 export const databaseProviders = [
   {
@@ -26,6 +27,7 @@ export const databaseProviders = [
           HomeImageSchema,
           CategorySchema,
           ReviewSchema,
+          OrderSchema,
         ],
         synchronize: false,
         migrations: ['dist/migrations/*.js'],
