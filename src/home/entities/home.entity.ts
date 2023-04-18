@@ -45,12 +45,12 @@ export class HomeSchema {
   @JoinColumn({ name: 'images', referencedColumnName: 'idHome' })
   images: HomeImageSchema[];
 
-  @OneToMany(type => OrderSchema, orders => orders.idOrder)
-  @JoinColumn({ name: 'orders', referencedColumnName: 'idOrder' })
+  @OneToMany(type => OrderSchema, orders => orders.idHome)
+  @JoinColumn({ name: 'orders', referencedColumnName: 'idHome' })
   orders: OrderSchema[];
 
-  @OneToMany(type => ReviewSchema, reviews => reviews.idReview)
-  @JoinColumn({ name: 'reviews', referencedColumnName: 'idReview' })
+  @OneToMany(type => ReviewSchema, reviews => reviews.idHome)
+  @JoinColumn({ name: 'reviews', referencedColumnName: 'idHome' })
   reviews: ReviewSchema[];
 
   @ManyToOne(type => UserSchema, users => users.idUser)
