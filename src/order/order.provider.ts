@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { OrderSchema } from 'src/home/entities/order.entity';
+import { OrderSchema } from 'src/order/order.entity';
 
 export const OrderProvider = [
     {

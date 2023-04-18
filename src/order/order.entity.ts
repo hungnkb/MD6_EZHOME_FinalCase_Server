@@ -7,8 +7,8 @@ import {
     JoinColumn,
     OneToMany,
 } from 'typeorm';
-import { HomeImageSchema } from './homeImage.entity';
-import { HomeSchema } from './home.entity';
+import { HomeImageSchema } from '../home/entities/homeImage.entity';
+import { HomeSchema } from '../home/entities/home.entity';
 
 @Entity({ name: 'orders' })
 export class OrderSchema {

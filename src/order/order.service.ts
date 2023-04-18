@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { OrderSchema } from "src/home/entities/order.entity";
+import { OrderSchema } from "src/order/order.entity";
 import { CreateOrderDto } from "src/order/order.dto";
 import { Repository } from "typeorm";
 
@@ -16,40 +16,83 @@ export class OrderService {
     }
 
     async findAll(): Promise<Object> {
-        return this.orderRepository.find({
-            relations: ['idUser', 'idHome'],
-            loadRelationIds: true,
-        });
+        // return this.orderRepository.find({
+        //     relations: ['idUser', 'idHome'],
+        //     loadRelationIds: true,
+        // });
+        return this.orderRepository
+        .createQueryBuilder('orders')
+        .select([
+            'orders',
+            'users.idUser.fullName',
+            'users.idUser.idUser',
+        ])
+        .leftJoinAndSelect('orders.idHome', 'homes.idHome')
+        .leftJoin('orders.idUser', 'users.idUser')
+        .getMany()
     }
 
     async findByIdOrder(idOrder: number): Promise<any> {
-        return this.orderRepository.findOneOrFail({
-            relations: ['idUser', 'idHome'],
-            loadRelationIds: true,
-            where: {
-                idOrder
-            }
-        });
+        // return this.orderRepository.findOneOrFail({
+        //     relations: ['users', 'homes'],
+        //     loadRelationIds: true,
+        //     where: {
+        //         idOrder
+        //     },
+        // });
+        return this.orderRepository
+        .createQueryBuilder('orders')
+        .where({idOrder})
+        .select([
+            'orders',
+            'users.idUser.fullName',
+            'users.idUser.idUser',
+        ])
+        .leftJoinAndSelect('orders.idHome', 'homes.idHome')
+        .leftJoin('orders.idUser', 'users.idUser')
+        .getOne()
     }
 
     async findByIdUser(idUser: number): Promise<Object> {
-        return this.orderRepository.find({
-            relations: ['idUser', 'idHome'],
-            loadRelationIds: true,
-            where: {
-                idUser
-            }
-        })
+        // return this.orderRepository.find({
+        //     relations: ['idUser', 'idHome'],
+        //     loadRelationIds: true,
+        //     where: {
+        //         idUser
+        //     }
+        // })
+        return this.orderRepository
+        .createQueryBuilder('orders')
+        .where({idUser})
+        .select([
+            'orders',
+            'users.idUser.fullName',
+            'users.idUser.idUser',
+        ])
+        .leftJoinAndSelect('orders.idHome', 'homes.idHome')
+        .leftJoin('orders.idUser', 'users.idUser')
+        .getOne()
     }
 
     async findByIdHome(idHome: number): Promise<Object> {
-        return this.orderRepository.find({
-            relations: ['idUser', 'idHome'],
-            loadRelationIds: true,
-            where: {
-                idHome
-            }
-        })
+        // return this.orderRepository.find({
+        //     relations: ['idUser', 'idHome'],
+        //     loadRelationIds: true,
+        //     where: {
+        //         idHome
+        //     }
+        // })
+        return this.orderRepository
+        .createQueryBuilder('orders')
+        .where({idHome})
+        .select([
+            'orders',
+            'users.idUser.fullName',
+            'users.idUser.idUser',
+        ])
+        .leftJoinAndSelect('orders.idHome', 'homes.idHome')
+        .leftJoin('orders.idUser', 'users.idUser')
+        .getOne()
     }
 
     async findByKeyword(keyword): Promise<Object> {
@@ -59,7 +102,7 @@ export class OrderService {
             return this.findByIdUser(keyword.idUser);
         } else if (keyword.idHome) {
             return this.findByIdHome(keyword.idHome);
-        } 
+        }
         return this.findAll();
     }
 
