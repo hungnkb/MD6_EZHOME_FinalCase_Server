@@ -80,8 +80,8 @@ export class HomeService {
   }
 
   async findByKeyword(keyword): Promise<HomeSchema[] | undefined> {
-    if (keyword.idUser) {
-      return this.findByIdUser(keyword.idUser);
+    if (keyword.idUser){
+      return this.findByIdUser(keyword.idUser, keyword.status);
     } else if (keyword.idHome) {
       return this.findByIdHome(keyword.idHome);
     }
@@ -109,7 +109,7 @@ export class HomeService {
       .getMany();
   }
 
-  async findByIdUser(idUser: string) {
+  async findByIdUser(idUser: string, status: string) {
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -120,7 +120,8 @@ export class HomeService {
         'categories.categoryName',
         'homeImages.urlHomeImage',
         'home.title',
-        'home.address'
+        'home.address',
+        'orders.status'
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
@@ -129,8 +130,10 @@ export class HomeService {
       .leftJoinAndSelect('homes.orders', 'orders')
       .leftJoinAndSelect('orders.idUser', 'customers')
       .leftJoin('orders.idHome', 'home')
+      .andWhere('orders.status = :status', { status: `${status}` })
       .getMany();
   }
+
 
   async findAll() {
     return this.homeRepository
