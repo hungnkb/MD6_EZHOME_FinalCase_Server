@@ -26,6 +26,7 @@ export class OrderService {
             'orders',
             'users.idUser.fullName',
             'users.idUser.idUser',
+            'users.idUser.email',
         ])
         .leftJoinAndSelect('orders.idHome', 'homes.idHome')
         .leftJoin('orders.idUser', 'users.idUser')
@@ -54,6 +55,7 @@ export class OrderService {
     }
 
     async findByIdUser(idUser: number): Promise<Object> {
+        console.log(idUser);
         // return this.orderRepository.find({
         //     relations: ['idUser', 'idHome'],
         //     loadRelationIds: true,
@@ -61,9 +63,9 @@ export class OrderService {
         //         idUser
         //     }
         // })
-        return this.orderRepository
+        const data = await this.orderRepository
         .createQueryBuilder('orders')
-        .where({idUser})
+        .where({idUser: 7})
         .select([
             'orders',
             'users.idUser.fullName',
@@ -72,6 +74,8 @@ export class OrderService {
         .leftJoinAndSelect('orders.idHome', 'homes.idHome')
         .leftJoin('orders.idUser', 'users.idUser')
         .getOne()
+        console.log(data);
+        return data
     }
 
     async findByIdHome(idHome: number): Promise<Object> {
