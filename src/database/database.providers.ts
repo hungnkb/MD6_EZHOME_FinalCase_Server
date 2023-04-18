@@ -33,7 +33,6 @@ export const databaseProviders = [
         migrations: ['dist/migrations/*.js'],
         migrationsRun: true
       });
-
       return dataSource.initialize();
     },
   },
