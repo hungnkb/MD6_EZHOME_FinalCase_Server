@@ -22,8 +22,7 @@ export const dataSourceOptions: DataSourceOptions = {
         ReviewSchema,
         HomeImageSchema,
         CategorySchema,
-        ReviewSchema,
-        OrderSchema,
+        OrderSchema
     ],
     migrations: ['dist/migrations/*.js'],
 };
