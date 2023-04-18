@@ -120,6 +120,7 @@ export class HomeService {
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
       .leftJoin('homes.images', 'homeImages')
+      .leftJoinAndSelect('homes.orders', 'orders')
       .where('homes.idUser = :id', { id: idUser })
       .getMany();
   }
