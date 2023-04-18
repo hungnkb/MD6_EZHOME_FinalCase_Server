@@ -27,7 +27,7 @@ export class OrderSchema {
     @Column({ nullable: false })
     charged: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, default: 'ongoing' })
     status: string;
 
     @ManyToOne(type => UserSchema, users => users.idUser)
