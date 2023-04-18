@@ -71,7 +71,7 @@ export class OrderService {
         ])
         .leftJoinAndSelect('orders.idHome', 'homes.idHome')
         .leftJoin('orders.idUser', 'users.idUser')
-        .getOne()
+        .getMany()
     }
 
     async findByIdHome(idHome: number): Promise<Object> {
@@ -92,7 +92,7 @@ export class OrderService {
         ])
         .leftJoinAndSelect('orders.idHome', 'homes.idHome')
         .leftJoin('orders.idUser', 'users.idUser')
-        .getOne()
+        .getMany()
     }
 
     async findByKeyword(keyword): Promise<Object> {
