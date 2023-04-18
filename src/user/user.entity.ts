@@ -1,4 +1,4 @@
-import { OrderSchema } from 'src/home/entities/order.entity';
+import { OrderSchema } from 'src/order/order.entity';
 import { ReviewSchema } from 'src/home/entities/review.entity';
 import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -45,10 +45,10 @@ export class UserSchema {
   role: UserRole;
 
   @OneToMany(type => OrderSchema, orders => orders.idOrder)
-  @JoinColumn({name: 'orders', referencedColumnName: 'idOrder'})
+  @JoinColumn({ name: 'orders', referencedColumnName: 'idOrder' })
   orders: OrderSchema[];
 
   @OneToMany(type => ReviewSchema, reviews => reviews.idReview)
-  @JoinColumn({name:'reviews', referencedColumnName: 'idReview'})
+  @JoinColumn({ name: 'reviews', referencedColumnName: 'idReview' })
   reviews: ReviewSchema[];
 }

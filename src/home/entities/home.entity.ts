@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { CategorySchema } from './category.entity';
 import { HomeImageSchema } from './homeImage.entity';
-import { OrderSchema } from './order.entity';
+import { OrderSchema } from '../../order/order.entity';
 import { ReviewSchema } from './review.entity';
 
 @Entity({ name: 'homes' })
@@ -42,15 +42,15 @@ export class HomeSchema {
   status: boolean;
 
   @OneToMany(type => HomeImageSchema, homeimages => homeimages.idHome)
-  @JoinColumn({name: 'images', referencedColumnName: 'idHome'})
+  @JoinColumn({ name: 'images', referencedColumnName: 'idHome' })
   images: HomeImageSchema[];
 
   @OneToMany(type => OrderSchema, orders => orders.idOrder)
-  @JoinColumn({name: 'orders', referencedColumnName: 'idOrder'})
+  @JoinColumn({ name: 'orders', referencedColumnName: 'idOrder' })
   orders: OrderSchema[];
 
   @OneToMany(type => ReviewSchema, reviews => reviews.idReview)
-  @JoinColumn({name:'reviews', referencedColumnName: 'idReview'})
+  @JoinColumn({ name: 'reviews', referencedColumnName: 'idReview' })
   reviews: ReviewSchema[];
 
   @ManyToOne(type => UserSchema, users => users.idUser)
