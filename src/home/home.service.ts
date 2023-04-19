@@ -110,28 +110,51 @@ export class HomeService {
   }
 
   async findByIdUser(idUser: string, status: string) {
-    return this.homeRepository
-      .createQueryBuilder('homes')
-      .select([
-        'homes',
-        'users.idUser',
-        'users.email',
-        'users.phone',
-        'categories.categoryName',
-        'homeImages.urlHomeImage',
-        'home.title',
-        'home.address',
-        'orders.status'
-      ])
-      .leftJoin('homes.idUser', 'users')
-      .leftJoin('homes.idCategory', 'categories')
-      .leftJoin('homes.images', 'homeImages')
-      .where('homes.idUser = :id', { id: idUser })
-      .leftJoinAndSelect('homes.orders', 'orders')
-      .leftJoinAndSelect('orders.idUser', 'customers')
-      .leftJoin('orders.idHome', 'home')
-      .andWhere('orders.status = :status', { status: `${status}` })
-      .getMany();
+    if(status){
+      return this.homeRepository
+        .createQueryBuilder('homes')
+        .select([
+          'homes',
+          'users.idUser',
+          'users.email',
+          'users.phone',
+          'categories.categoryName',
+          'homeImages.urlHomeImage',
+          'home.title',
+          'home.address',
+          'orders.status'
+        ])
+        .leftJoin('homes.idUser', 'users')
+        .leftJoin('homes.idCategory', 'categories')
+        .leftJoin('homes.images', 'homeImages')
+        .where('homes.idUser = :id', { id: idUser })
+        .leftJoinAndSelect('homes.orders', 'orders')
+        .leftJoinAndSelect('orders.idUser', 'customers')
+        .leftJoin('orders.idHome', 'home')
+        .andWhere('orders.status = :status', { status: `${status}` })
+        .getMany();
+    } else {
+      return this.homeRepository
+        .createQueryBuilder('homes')
+        .select([
+          'homes',
+          'users.idUser',
+          'users.email',
+          'users.phone',
+          'categories.categoryName',
+          'homeImages.urlHomeImage',
+          'home.title',
+          'home.address',
+        ])
+        .leftJoin('homes.idUser', 'users')
+        .leftJoin('homes.idCategory', 'categories')
+        .leftJoin('homes.images', 'homeImages')
+        .where('homes.idUser = :id', { id: idUser })
+        .leftJoinAndSelect('homes.orders', 'orders')
+        .leftJoinAndSelect('orders.idUser', 'customers')
+        .leftJoin('orders.idHome', 'home')
+        .getMany();
+    }
   }
 
 
