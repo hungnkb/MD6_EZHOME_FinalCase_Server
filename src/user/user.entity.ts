@@ -1,6 +1,12 @@
 import { OrderSchema } from 'src/order/order.entity';
 import { ReviewSchema } from 'src/reviews/review.entity';
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum UserRole {
   _ADMIN = 'admin',

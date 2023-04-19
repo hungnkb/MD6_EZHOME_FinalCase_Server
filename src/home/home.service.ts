@@ -84,6 +84,8 @@ export class HomeService {
       return this.findByIdUser(keyword.idUser, keyword.status);
     } else if (keyword.idHome) {
       return this.findByIdHome(keyword.idHome);
+    } else if (keyword.address || keyword.bathrooms || keyword.bedrooms || (keyword.checkin && keyword.checkout)) {
+      return this.searchHome(keyword.address, keyword.bathrooms, keyword.bedrooms, keyword.checkin, keyword.checkout)
     }
     return this.findAll();
   }
@@ -110,7 +112,7 @@ export class HomeService {
   }
 
   async findByIdUser(idUser: string, status: string) {
-    if(status){
+    if (status) {
       return this.homeRepository
         .createQueryBuilder('homes')
         .select([
@@ -122,7 +124,7 @@ export class HomeService {
           'homeImages.urlHomeImage',
           'home.title',
           'home.address',
-          'orders.status'
+          'orders.status',
         ])
         .leftJoin('homes.idUser', 'users')
         .leftJoin('homes.idCategory', 'categories')
@@ -155,6 +157,18 @@ export class HomeService {
         .leftJoin('orders.idHome', 'home')
         .getMany();
     }
+  }
+
+  async searchHome(address?: string, bathrooms?: number, bedrooms?: number, checkin?: Date, checkout?: Date) {
+    return this.homeRepository
+    .createQueryBuilder('homes')
+    .where('homes.address = :address', {address})
+    .andWhere('homes.bathrooms = :bathrooms', {bathrooms})
+    .andWhere('homes.bedrooms = :bedrooms', {bedrooms})
+    .andWhere('orders.checkin > :checkout OR orders.checkin = :checkout', {checkout})
+    .andWhere('orders.checkout < :checkin or orders.checkout = :checkout', {checkin})
+    .leftJoinAndSelect('orders', 'orders')
+    .execute()
   }
 
   async findAll() {
