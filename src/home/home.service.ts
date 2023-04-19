@@ -135,7 +135,7 @@ export class HomeService {
         .leftJoin('orders.idHome', 'home')
         .andWhere('orders.status = :status', { status: `${status}` })
         .getMany();
-    } else {
+    } 
       return this.homeRepository
         .createQueryBuilder('homes')
         .select([
@@ -156,19 +156,20 @@ export class HomeService {
         .leftJoinAndSelect('orders.idUser', 'customers')
         .leftJoin('orders.idHome', 'home')
         .getMany();
-    }
+
   }
 
   async searchHome(address?: string, bathrooms?: number, bedrooms?: number, checkin?: Date, checkout?: Date) {
+    const trimAddress = address.replace(/ /g,'')
     return this.homeRepository
     .createQueryBuilder('homes')
-    .where('homes.address = :address', {address})
+    .where("REPLACE(homes.address, ' ', '') like '%' :address '%'", {address: trimAddress})
     .andWhere('homes.bathrooms = :bathrooms', {bathrooms})
     .andWhere('homes.bedrooms = :bedrooms', {bedrooms})
-    .andWhere('orders.checkin > :checkout OR orders.checkin = :checkout', {checkout})
-    .andWhere('orders.checkout < :checkin or orders.checkout = :checkout', {checkin})
-    .leftJoinAndSelect('orders', 'orders')
-    .execute()
+    .leftJoinAndSelect('homes.orders', 'orders')
+    .groupBy('homes.idHome')
+    .having('orders.checkin >= CAST(:checkout as date)  OR orders.checkout <= CAST(:checkin as date)  OR orders.checkin is null', {checkout, checkin})
+    .getMany()
   }
 
   async findAll() {
