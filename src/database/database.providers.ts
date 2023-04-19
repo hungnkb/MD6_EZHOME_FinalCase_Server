@@ -5,7 +5,7 @@ import { HomeImageSchema } from 'src/home/entities/homeImage.entity';
 import { UserSchema } from 'src/user/user.entity';
 import { DataSource } from 'typeorm';
 import 'reflect-metadata';
-import { ReviewSchema } from 'src/home/entities/review.entity';
+import { ReviewSchema } from 'src/reviews/review.entity';
 import { OrderSchema } from 'src/order/order.entity';
 
 export const databaseProviders = [

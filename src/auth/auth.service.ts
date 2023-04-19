@@ -28,6 +28,7 @@ export class AuthService {
     if (!user)
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     let isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch)
     if (isMatch) {
       const payload = {
         email: user.email,
