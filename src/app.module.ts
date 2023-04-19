@@ -11,7 +11,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { HomeModule } from './modules/home/home.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderModule } from './modules/order/order.module';
-import {ReviewModule} from "./modules/review/review.module";
+import { ReviewModule } from './modules/review/review.module';
 
 @Module({
   imports: [
@@ -39,7 +39,7 @@ import {ReviewModule} from "./modules/review/review.module";
           {
             path: 'reviews',
             module: ReviewModule,
-          }
+          },
         ],
       },
     ]),
