@@ -14,7 +14,7 @@ import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
-      ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true }),
     RouterModule.register([
       {
         path: 'api/v1/',
@@ -34,7 +34,7 @@ import { OrderModule } from './modules/order/order.module';
           {
             path: 'orders',
             module: OrderModule,
-          }
+          },
         ],
       },
     ]),

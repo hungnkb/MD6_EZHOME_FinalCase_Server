@@ -14,8 +14,7 @@ export class CreateOrderDto {
   idUser: number;
 
   @IsNotEmpty()
-  idHome: number
-
+  idHome: number;
 }
 
 export class UpdateStatusOrder {

@@ -16,7 +16,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -55,15 +55,15 @@ export class HomeService {
 
     for (let i = 0; i < files.length; i++) {
       this.homeImageRepository
-      .createQueryBuilder()
-      .insert()
-      .into(HomeImageSchema)
-      .values({
-        urlHomeImage: files[i],
-        idHome: newHome.identifiers[0].idHome,
-      })
-      .execute()
-    };
+        .createQueryBuilder()
+        .insert()
+        .into(HomeImageSchema)
+        .values({
+          urlHomeImage: files[i],
+          idHome: newHome.identifiers[0].idHome,
+        })
+        .execute();
+    }
 
     return newHome;
   }
@@ -80,7 +80,7 @@ export class HomeService {
   }
 
   async findByKeyword(keyword): Promise<HomeSchema[] | undefined> {
-    if (keyword.idUser){
+    if (keyword.idUser) {
       return this.findByIdUser(keyword.idUser, keyword.status);
     } else if (keyword.idHome) {
       return this.findByIdHome(keyword.idHome);
@@ -121,7 +121,7 @@ export class HomeService {
         'homeImages.urlHomeImage',
         'home.title',
         'home.address',
-        'orders.status'
+        'orders.status',
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
@@ -133,7 +133,6 @@ export class HomeService {
       .andWhere('orders.status = :status', { status: `${status}` })
       .getMany();
   }
-
 
   async findAll() {
     return this.homeRepository
@@ -157,9 +156,9 @@ export class HomeService {
       .createQueryBuilder()
       .update(HomeSchema)
       .set({
-        status
+        status,
       })
-      .where("idHome = :id", { id: idHome })
-      .execute()
+      .where('idHome = :id', { id: idHome })
+      .execute();
   }
 }

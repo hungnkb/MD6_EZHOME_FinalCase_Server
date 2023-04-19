@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Put, Post, Query, Param, Redirect } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Put,
+  Post,
+  Query,
+  Param,
+  Redirect,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 
@@ -21,7 +30,7 @@ export class UserController {
 
   @Put()
   update(@Body() body: UpdateUserDto): Promise<any> {
-    console.log(body)
+    console.log(body);
     return this.userService.update(body);
   }
 
