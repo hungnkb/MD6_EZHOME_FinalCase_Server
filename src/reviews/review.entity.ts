@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { HomeSchema } from './home.entity';
+import { HomeSchema } from '../home/entities/home.entity';
 import { UserSchema } from 'src/user/user.entity';
 
 @Entity({ name: 'reviews' })
