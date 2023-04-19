@@ -10,6 +10,12 @@ import {
 import { HomeImageSchema } from '../home/entities/homeImage.entity';
 import { HomeSchema } from '../home/entities/home.entity';
 
+export enum OrderStatus {
+    _ONGOING = 'ongoing',
+    _DONE = 'done',
+    _CANCELLED = 'cancelled',
+}
+
 @Entity({ name: 'orders' })
 export class OrderSchema {
     @PrimaryGeneratedColumn()
@@ -27,7 +33,12 @@ export class OrderSchema {
     @Column({ nullable: false })
     charged: number;
 
-    @Column({ nullable: false, default: 'ongoing' })
+    @Column({
+        nullable: false,
+        type: 'enum',
+        enum: OrderStatus,
+        default: OrderStatus._ONGOING
+    })
     status: string;
 
     @ManyToOne(type => UserSchema, users => users.idUser)
