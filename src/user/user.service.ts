@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserSchema>,
-  ) { }
+  ) {}
 
   async findAll(): Promise<UserSchema[] | undefined> {
     return this.userRepository.find();
@@ -75,7 +75,7 @@ export class UserService {
 
   async update(body: UpdateUserDto): Promise<any> {
     let { email, phone, fullName, address, role } = body;
-    
+
     let user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
@@ -153,11 +153,11 @@ export class UserService {
 
   async changePassword(body): Promise<any> {
     const { oldPassword, newPassword, email } = body;
-    if (oldPassword != ""){
+    if (oldPassword != '') {
       const hashNewPassword = await bcrypt.hash(newPassword, 10);
-      let user = await this.findByKeyword(email)
+      let user = await this.findByKeyword(email);
       let isMatch = await bcrypt.compare(oldPassword, user.password);
-      if (isMatch){
+      if (isMatch) {
         let activeUser = await this.userRepository
           .createQueryBuilder()
           .update('users')
@@ -170,7 +170,7 @@ export class UserService {
       }
     } else {
       const hashNewPassword = await bcrypt.hash(newPassword, 10);
-      let user = await this.findByKeyword(email)
+      let user = await this.findByKeyword(email);
       let activeUser = await this.userRepository
         .createQueryBuilder()
         .update('users')
@@ -181,5 +181,3 @@ export class UserService {
     }
   }
 }
-
-

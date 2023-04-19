@@ -15,7 +15,7 @@ import {ReviewModule} from "./modules/review/review.module";
 
 @Module({
   imports: [
-      ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true }),
     RouterModule.register([
       {
         path: 'api/v1/',

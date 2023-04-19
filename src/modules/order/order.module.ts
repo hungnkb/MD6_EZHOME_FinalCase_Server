@@ -7,12 +7,8 @@ import { OrderController } from 'src/order/order.controller';
 import { OrderService } from 'src/order/order.service';
 
 @Module({
-    imports: [DatabaseModule],
-    controllers: [OrderController],
-    providers: [
-        ...databaseProviders,
-        ...OrderProvider,
-        OrderService,
-    ],
+  imports: [DatabaseModule],
+  controllers: [OrderController],
+  providers: [...databaseProviders, ...OrderProvider, OrderService],
 })
-export class OrderModule { }
+export class OrderModule {}

@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -24,7 +19,7 @@ export class AuthService {
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserSchema>,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async login(body): Promise<Object> {
     const { email, password } = body;
@@ -59,7 +54,7 @@ export class AuthService {
           sub: user.idUser,
           active: user.active,
         };
-        let accessToken = await this.assignToken(payload)
+        let accessToken = await this.assignToken(payload);
 
         return { accessToken };
       }
@@ -73,9 +68,12 @@ export class AuthService {
           sub: returnUser.idUser,
           active: returnUser.active,
         };
-        
+
         bcrypt
-          .hash(returnUser.email, parseInt(this.configService.get('BCRYPT_SALT_ROUND')))
+          .hash(
+            returnUser.email,
+            parseInt(this.configService.get('BCRYPT_SALT_ROUND')),
+          )
           .then((hashedEmail) => {
             mailer.sendMail(
               returnUser.email,
@@ -83,7 +81,7 @@ export class AuthService {
               `<a href="http://localhost:3002/api/v1/users/active?email=${returnUser.email}&token=${hashedEmail}"> Verify </a>`,
             );
           });
-        let accessToken = await this.assignToken(payload)
+        let accessToken = await this.assignToken(payload);
         return { accessToken };
       }
     }

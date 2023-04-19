@@ -44,11 +44,11 @@ export class UserSchema {
   })
   role: UserRole;
 
-  @OneToMany(type => OrderSchema, orders => orders.idOrder)
+  @OneToMany((type) => OrderSchema, (orders) => orders.idOrder)
   @JoinColumn({ name: 'orders', referencedColumnName: 'idOrder' })
   orders: OrderSchema[];
 
-  @OneToMany(type => ReviewSchema, reviews => reviews.idReview)
+  @OneToMany((type) => ReviewSchema, (reviews) => reviews.idReview)
   @JoinColumn({ name: 'reviews', referencedColumnName: 'idReview' })
   reviews: ReviewSchema[];
 }
