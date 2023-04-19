@@ -10,7 +10,7 @@ import {
 import { CategorySchema } from './category.entity';
 import { HomeImageSchema } from './homeImage.entity';
 import { OrderSchema } from '../../order/order.entity';
-import { ReviewSchema } from './review.entity';
+import { ReviewSchema } from '../../reviews/review.entity';
 
 @Entity({ name: 'homes' })
 export class HomeSchema {

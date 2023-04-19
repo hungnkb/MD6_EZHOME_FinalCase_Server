@@ -15,6 +15,8 @@ import {
   OtherService,
 } from 'src/cloudinary/cloudinary.service';
 import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
+import {ReviewProvider} from "../../reviews/review.provider";
+import {ReviewService} from "../../reviews/review.service";
 
 @Module({
   imports: [DatabaseModule, UserModule, CloudinaryModule],
