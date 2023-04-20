@@ -1,17 +1,37 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { OrderSchema } from 'src/order/order.entity';
 import { CreateOrderDto } from 'src/order/order.dto';
 import { Repository } from 'typeorm';
+import { HomeService } from 'src/home/home.service';
+import { plainToClass, classToPlain } from 'class-transformer';
 
 @Injectable()
 export class OrderService {
   constructor(
     @Inject('ORDER_REPOSITORY')
     private orderRepository: Repository<OrderSchema>,
-  ) {}
+    private homeService: HomeService,
+  ) { }
 
   async create(body: CreateOrderDto): Promise<Object> {
-    return this.orderRepository.save(body);
+    const checkOrderByOwner = await this.isOrderByOwner(body.idHome, body.idUser)
+    
+    if (checkOrderByOwner) {
+      return this.orderRepository.save(body);
+    }
+    throw new HttpException('You can not book your own home', HttpStatus.BAD_REQUEST)
+  }
+
+  async isOrderByOwner(idHome: number, idUser: number) {
+    const home = await this.homeService.findByIdHome(idHome)
+    const owner = home[0].idUser;
+    const classOwner = classToPlain(owner)
+    const idOwner = classOwner.idUser
+    
+    if (idOwner === idUser) {
+      return new HttpException('Bad Request', HttpStatus.BAD_REQUEST)
+    }
+    return idOwner
   }
 
   async findAll(): Promise<Object> {
@@ -45,7 +65,7 @@ export class OrderService {
   }
 
   async findByIdUser(idUser: string, status: string): Promise<Object> {
-    if (status){
+    if (status) {
       return this.orderRepository
         .createQueryBuilder('orders')
         .where({ idUser })

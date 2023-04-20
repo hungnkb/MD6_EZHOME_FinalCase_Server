@@ -30,8 +30,7 @@ export const databaseProviders = [
           OrderSchema,
         ],
         synchronize: false,
-        migrations: ['dist/migrations/*.js'],
-        migrationsRun: true,
+        migrations: ['dist/migrations/*.js']
       });
       return dataSource.initialize();
     },
