@@ -16,7 +16,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -84,6 +84,8 @@ export class HomeService {
       return this.findByIdUser(keyword.idUser, keyword.status);
     } else if (keyword.idHome) {
       return this.findByIdHome(keyword.idHome);
+    } else if (keyword.address || keyword.bathrooms || keyword.bedrooms || (keyword.checkin && keyword.checkout)) {
+      return this.searchHome(keyword.address, keyword.bathrooms, keyword.bedrooms, keyword.checkin, keyword.checkout)
     }
     return this.findAll();
   }
@@ -110,7 +112,7 @@ export class HomeService {
   }
 
   async findByIdUser(idUser: string, status: string) {
-    if(status){
+    if (status) {
       return this.homeRepository
         .createQueryBuilder('homes')
         .select([
@@ -122,7 +124,7 @@ export class HomeService {
           'homeImages.urlHomeImage',
           'home.title',
           'home.address',
-          'orders.status'
+          'orders.status',
         ])
         .leftJoin('homes.idUser', 'users')
         .leftJoin('homes.idCategory', 'categories')
@@ -133,28 +135,52 @@ export class HomeService {
         .leftJoin('orders.idHome', 'home')
         .andWhere('orders.status = :status', { status: `${status}` })
         .getMany();
-    } else {
-      return this.homeRepository
-        .createQueryBuilder('homes')
-        .select([
-          'homes',
-          'users.idUser',
-          'users.email',
-          'users.phone',
-          'categories.categoryName',
-          'homeImages.urlHomeImage',
-          'home.title',
-          'home.address',
-        ])
-        .leftJoin('homes.idUser', 'users')
-        .leftJoin('homes.idCategory', 'categories')
-        .leftJoin('homes.images', 'homeImages')
-        .where('homes.idUser = :id', { id: idUser })
-        .leftJoinAndSelect('homes.orders', 'orders')
-        .leftJoinAndSelect('orders.idUser', 'customers')
-        .leftJoin('orders.idHome', 'home')
-        .getMany();
     }
+    return this.homeRepository
+      .createQueryBuilder('homes')
+      .select([
+        'homes',
+        'users.idUser',
+        'users.email',
+        'users.phone',
+        'categories.categoryName',
+        'homeImages.urlHomeImage',
+        'home.title',
+        'home.address',
+      ])
+      .leftJoin('homes.idUser', 'users')
+      .leftJoin('homes.idCategory', 'categories')
+      .leftJoin('homes.images', 'homeImages')
+      .where('homes.idUser = :id', { id: idUser })
+      .leftJoinAndSelect('homes.orders', 'orders')
+      .leftJoinAndSelect('orders.idUser', 'customers')
+      .leftJoin('orders.idHome', 'home')
+      .getMany();
+
+  }
+
+  async searchHome(address?: string, bathrooms?: number, bedrooms?: number, checkin?: Date, checkout?: Date) {
+    const trimAddress = address.replace(/ /g, '')
+    return this.homeRepository
+      .createQueryBuilder('homes')
+      .select([
+        'homes',
+        'users.idUser.idUser',
+        'users.idUser.email',
+        'users.idUser.phone',
+        'users.idUser.image',
+        'homeImages.urlHomeImage',
+      ])
+      .where("REPLACE(homes.address, ' ', '') like '%' :address '%'", { address: trimAddress })
+      .andWhere('homes.bathrooms = :bathrooms', { bathrooms })
+      .andWhere('homes.bedrooms = :bedrooms', { bedrooms })
+      .leftJoin('homes.idUser', 'users.idUser')
+      .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
+      .leftJoin('homes.images', 'homeImages')
+      .leftJoinAndSelect('homes.orders', 'orders')
+      .groupBy('homes.idHome')
+      .having('orders.checkin >= CAST(:checkout as date)  OR orders.checkout <= CAST(:checkin as date)  OR orders.checkin is null', { checkout, checkin })
+      .getMany()
   }
 
   async findAll() {

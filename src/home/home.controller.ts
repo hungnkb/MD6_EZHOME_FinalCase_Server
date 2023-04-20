@@ -27,7 +27,7 @@ export class HomeController {
   }
 
   @Get()
-  findByKeyword(@Query() query: any, @Request() req): Promise<any> {
+  findByKeyword(@Query() query: any): Promise<any> {
     return this.homeService.findByKeyword(query);
   }
 
