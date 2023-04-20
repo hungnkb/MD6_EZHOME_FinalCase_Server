@@ -44,21 +44,26 @@ export class OrderService {
       .getOne();
   }
 
-  async findByIdUser(idUser: number): Promise<Object> {
-    // return this.orderRepository.find({
-    //     relations: ['idUser', 'idHome'],
-    //     loadRelationIds: true,
-    //     where: {
-    //         idUser
-    //     }
-    // })
-    return this.orderRepository
-      .createQueryBuilder('orders')
-      .where({ idUser })
-      .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser'])
-      .leftJoinAndSelect('orders.idHome', 'homes.idHome')
-      .leftJoin('orders.idUser', 'users.idUser')
-      .getMany();
+  async findByIdUser(idUser: string, status: string): Promise<Object> {
+    if (status){
+      return this.orderRepository
+        .createQueryBuilder('orders')
+        .where({ idUser })
+        .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser'])
+        .leftJoinAndSelect('orders.idHome', 'homes.idHome')
+        .leftJoin('orders.idUser', 'users.idUser')
+        .andWhere('orders.status = :status', { status: `${status}` })
+        .getMany();
+    } else {
+      return this.orderRepository
+        .createQueryBuilder('orders')
+        .where({ idUser })
+        .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser'])
+        .leftJoinAndSelect('orders.idHome', 'homes.idHome')
+        .leftJoin('orders.idUser', 'users.idUser')
+        .getMany();
+    }
+
   }
 
   async findByIdHome(idHome: number): Promise<Object> {
@@ -82,7 +87,7 @@ export class OrderService {
     if (keyword.idOrder) {
       return this.findByIdOrder(keyword.idOrder);
     } else if (keyword.idUser) {
-      return this.findByIdUser(keyword.idUser);
+      return this.findByIdUser(keyword.idUser, keyword.status);
     } else if (keyword.idHome) {
       return this.findByIdHome(keyword.idHome);
     }
