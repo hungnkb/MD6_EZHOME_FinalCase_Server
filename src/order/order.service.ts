@@ -11,27 +11,33 @@ export class OrderService {
     @Inject('ORDER_REPOSITORY')
     private orderRepository: Repository<OrderSchema>,
     private homeService: HomeService,
-  ) { }
+  ) {}
 
   async create(body: CreateOrderDto): Promise<Object> {
-    const checkOrderByOwner = await this.isOrderByOwner(body.idHome, body.idUser)
-    
+    const checkOrderByOwner = await this.isOrderByOwner(
+      body.idHome,
+      body.idUser,
+    );
+
     if (checkOrderByOwner) {
       return this.orderRepository.save(body);
     }
-    throw new HttpException('You can not book your own home', HttpStatus.BAD_REQUEST)
+    throw new HttpException(
+      'You can not book your own home',
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   async isOrderByOwner(idHome: number, idUser: number) {
-    const home = await this.homeService.findByIdHome(idHome)
+    const home = await this.homeService.findByIdHome(idHome);
     const owner = home[0].idUser;
-    const classOwner = classToPlain(owner)
-    const idOwner = classOwner.idUser
-    
+    const classOwner = classToPlain(owner);
+    const idOwner = classOwner.idUser;
+
     if (idOwner === idUser) {
-      return new HttpException('Bad Request', HttpStatus.BAD_REQUEST)
+      return new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
-    return idOwner
+    return idOwner;
   }
 
   async findAll(): Promise<Object> {
@@ -83,7 +89,6 @@ export class OrderService {
         .leftJoin('orders.idUser', 'users.idUser')
         .getMany();
     }
-
   }
 
   async findByIdHome(idHome: number): Promise<Object> {

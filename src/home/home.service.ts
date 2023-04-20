@@ -17,7 +17,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -85,8 +85,14 @@ export class HomeService {
       return this.findByIdUser(keyword.idUser, keyword.status);
     } else if (keyword.idHome) {
       return this.findByIdHome(keyword.idHome);
-    } else if (keyword.address || keyword.bathrooms || keyword.bedrooms || keyword.minPrice || (keyword.checkin && keyword.checkout)) {
-      return this.searchHome(keyword)
+    } else if (
+      keyword.address ||
+      keyword.bathrooms ||
+      keyword.bedrooms ||
+      keyword.minPrice ||
+      (keyword.checkin && keyword.checkout)
+    ) {
+      return this.searchHome(keyword);
     }
     return this.findAll();
   }
@@ -157,13 +163,20 @@ export class HomeService {
       .leftJoinAndSelect('orders.idUser', 'customers')
       .leftJoin('orders.idHome', 'home')
       .getMany();
-
   }
 
   async searchHome(keyword): Promise<any> {
-    const { address, bedrooms, bathrooms, checkin, checkout, minPrice, maxPrice } = keyword;
-    const trimAddress = address ? address.replace(/ /g, '') : "";
-    
+    const {
+      address,
+      bedrooms,
+      bathrooms,
+      checkin,
+      checkout,
+      minPrice,
+      maxPrice,
+    } = keyword;
+    const trimAddress = address ? address.replace(/ /g, '') : '';
+
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -174,19 +187,40 @@ export class HomeService {
         'users.idUser.image',
         'homeImages.urlHomeImage',
       ])
-      .where(address ? "REPLACE(homes.address, ' ', '') LIKE '%' :address '%'" : '1=1', { address: trimAddress })
-      .andWhere(bathrooms ? 'homes.bathrooms = :bathrooms' : '1=1', { bathrooms })
+      .where(
+        address
+          ? "REPLACE(homes.address, ' ', '') LIKE '%' :address '%'"
+          : '1=1',
+        { address: trimAddress },
+      )
+      .andWhere(bathrooms ? 'homes.bathrooms = :bathrooms' : '1=1', {
+        bathrooms,
+      })
       .andWhere(bedrooms ? 'homes.bedrooms = :bathrooms' : '1=1', { bedrooms })
-      .andWhere(minPrice ? 'homes.price >= :minPrice' : '1=1', { minPrice: Number(minPrice) })
-      .andWhere(maxPrice ? 'homes.price <= :maxPrice' : '1=1', { maxPrice: Number(maxPrice) })
+      .andWhere(minPrice ? 'homes.price >= :minPrice' : '1=1', {
+        minPrice: Number(minPrice),
+      })
+      .andWhere(maxPrice ? 'homes.price <= :maxPrice' : '1=1', {
+        maxPrice: Number(maxPrice),
+      })
       .leftJoin('homes.idUser', 'users.idUser')
       .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
       .leftJoin('homes.images', 'homeImages')
       .leftJoinAndSelect('homes.orders', 'orders')
       .groupBy('homes.idHome')
-      .having(checkout ? 'orders.checkin >= CAST(:checkout as date) OR orders.checkin IS NULL' : '1=1', { checkout })
-      .andHaving(checkin ? 'orders.checkout <= CAST(:checkin as date) OR orders.checkout IS NULL' : '1=1', { checkin })
-      .getMany()
+      .having(
+        checkout
+          ? 'orders.checkin >= CAST(:checkout as date) OR orders.checkin IS NULL'
+          : '1=1',
+        { checkout },
+      )
+      .andHaving(
+        checkin
+          ? 'orders.checkout <= CAST(:checkin as date) OR orders.checkout IS NULL'
+          : '1=1',
+        { checkin },
+      )
+      .getMany();
   }
 
   async findAll() {
