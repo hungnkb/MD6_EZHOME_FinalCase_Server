@@ -26,6 +26,7 @@ import { UserProvider } from 'src/user/user.provider';
     ...HomeImageProvider,
     UserService,
     ...UserProvider,
-    CloudinaryService],
+    CloudinaryService,
+  ],
 })
-export class OrderModule { }
+export class OrderModule {}

@@ -28,7 +28,6 @@ export class HomeController {
 
   @Get()
   findByKeyword(@Query() query: any): Promise<any> {
-    console.log(query);
     return this.homeService.findByKeyword(query);
   }
 
