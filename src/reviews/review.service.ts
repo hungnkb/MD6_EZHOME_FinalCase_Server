@@ -60,7 +60,7 @@ export class ReviewService {
             ])
             .leftJoin('reviews.idHome', 'homes.idHome')
             .leftJoin('reviews.idUser', 'users.idUser')
-            .getOne()
+            .getMany()
     }
     async findByIdHome(idHome: number): Promise<Object> {
         // return this.orderRepository.find({
@@ -81,9 +81,9 @@ export class ReviewService {
                 'homes.idHome',
                 'homes.title',
             ])
-            .leftJoin('reviews.idHome', 'homes.idHome')
-            .leftJoin('reviews.idUser', 'users.idUser')
-            .getOne()
+            .leftJoin('reviews.idHome', 'homes')
+            .leftJoin('reviews.idUser', 'users')
+            .getMany()
     }
 
     async findByIdReview(idReview: number): Promise<any> {
@@ -105,8 +105,8 @@ export class ReviewService {
                 'homes.idHome',
                 'homes.title',
             ])
-            .leftJoin('reviews.idHome', 'homes.idHome')
-            .leftJoin('reviews.idUser', 'users.idUser')
+            .leftJoin('reviews.idHome', 'homes')
+            .leftJoin('reviews.idUser', 'users')
             .getOne()
     }
 }

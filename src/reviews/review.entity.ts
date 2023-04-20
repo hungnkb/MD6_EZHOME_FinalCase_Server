@@ -19,6 +19,9 @@ export class ReviewSchema {
   @Column({ nullable: false })
   contents: string;
 
+  @Column({ nullable: true, default: () => 'CAST(NOW() AS DATE)' })
+  createdAt: Date;
+
   @ManyToOne((type) => HomeSchema, (homes) => homes.idHome)
   @JoinColumn({ name: 'idHome', referencedColumnName: 'idHome' })
   idHome: HomeSchema;
