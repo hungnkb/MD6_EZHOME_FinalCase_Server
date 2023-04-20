@@ -90,7 +90,7 @@ export class HomeService {
     return this.findAll();
   }
 
-  async findByIdHome(idHome: string) {
+  async findByIdHome(idHome: number): Promise<HomeSchema[]> {
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -162,32 +162,32 @@ export class HomeService {
   async searchHome(address?: string, bathrooms?: number, bedrooms?: number, checkin?: Date, checkout?: Date) {
     const trimAddress = address.replace(/ /g, '')
 
-    return this.homeRepository.find({
-      relations: ['users', 'homeImages', 'categories'],
-      loadRelationIds: true,
-      select: ['idHome', 'idUser']
-    })
-   
-    // return this.homeRepository
-    //   .createQueryBuilder('homes')
-    //   .select([
-    //     'homes',
-    //     'users.idUser.idUser',
-    //     'users.idUser.email',
-    //     'users.idUser.phone',
-    //     'users.idUser.image',
-    //     'homeImages.urlHomeImage',
-    //   ])
-    //   .where("REPLACE(homes.address, ' ', '') like '%' :address '%'", { address: trimAddress })
-    //   .andWhere('homes.bathrooms = :bathrooms', { bathrooms })
-    //   .andWhere('homes.bedrooms = :bedrooms', { bedrooms })
-    //   .leftJoin('homes.idUser', 'users.idUser')
-    //   .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
-    //   .leftJoin('homes.images', 'homeImages')
-    //   .leftJoinAndSelect('homes.orders', 'orders')
-    //   .groupBy('homes.idHome')
-    //   .having('orders.checkin >= CAST(:checkout as date)  OR orders.checkout <= CAST(:checkin as date)  OR orders.checkin is null', { checkout, checkin })
-    //   .getMany()
+    // return this.homeRepository.find({
+    //   relations: ['users', 'homeImages', 'categories'],
+    //   loadRelationIds: true,
+    //   select: ['idHome', 'idUser']
+    // })
+
+    return this.homeRepository
+      .createQueryBuilder('homes')
+      .select([
+        'homes',
+        'users.idUser.idUser',
+        'users.idUser.email',
+        'users.idUser.phone',
+        'users.idUser.image',
+        'homeImages.urlHomeImage',
+      ])
+      .where("homes.address like :address ", { address: `%${trimAddress}%` })
+      .orWhere('MATCH(homes.bathrooms) AGAINST (:bathrooms IN BOOLEAN MODE)', { bathrooms })
+      .andWhere('homes.bedrooms= :bedrooms', { bedrooms })
+      .leftJoin('homes.idUser', 'users.idUser')
+      .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
+      .leftJoin('homes.images', 'homeImages')
+      .leftJoinAndSelect('homes.orders', 'orders')
+      .groupBy('homes.idHome')
+      .having('orders.checkin >= CAST(:checkout as date)  OR orders.checkout <= CAST(:checkin as date)  OR orders.checkin is null', { checkout, checkin })
+      .getMany()
   }
 
   async findAll() {

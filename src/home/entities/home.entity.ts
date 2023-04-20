@@ -6,6 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  Index,
 } from 'typeorm';
 import { CategorySchema } from './category.entity';
 import { HomeImageSchema } from './homeImage.entity';
@@ -26,6 +27,7 @@ export class HomeSchema {
   @Column({ nullable: false })
   address: string;
 
+  @Index({ fulltext: true })
   @Column({ nullable: false })
   bathrooms: number;
 
