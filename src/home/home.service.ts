@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { HomeSchema } from './entities/home.entity';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { HomeImageSchema } from './entities/homeImage.entity';
+import { log } from 'console';
 
 @Injectable()
 export class HomeService {
@@ -84,8 +85,8 @@ export class HomeService {
       return this.findByIdUser(keyword.idUser, keyword.status);
     } else if (keyword.idHome) {
       return this.findByIdHome(keyword.idHome);
-    } else if (keyword.address || keyword.bathrooms || keyword.bedrooms || (keyword.checkin && keyword.checkout)) {
-      return this.searchHome(keyword.address, keyword.bathrooms, keyword.bedrooms, keyword.checkin, keyword.checkout)
+    } else if (keyword.address || keyword.bathrooms || keyword.bedrooms || keyword.minPrice || (keyword.checkin && keyword.checkout)) {
+      return this.searchHome(keyword)
     }
     return this.findAll();
   }
@@ -159,15 +160,10 @@ export class HomeService {
 
   }
 
-  async searchHome(address?: string, bathrooms?: number, bedrooms?: number, checkin?: Date, checkout?: Date) {
-    const trimAddress = address.replace(/ /g, '')
-
-    // return this.homeRepository.find({
-    //   relations: ['users', 'homeImages', 'categories'],
-    //   loadRelationIds: true,
-    //   select: ['idHome', 'idUser']
-    // })
-
+  async searchHome(keyword): Promise<any> {
+    const { address, bedrooms, bathrooms, checkin, checkout, minPrice, maxPrice } = keyword;
+    const trimAddress = address ? address.replace(/ /g, '') : "";
+    
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -178,15 +174,18 @@ export class HomeService {
         'users.idUser.image',
         'homeImages.urlHomeImage',
       ])
-      .where("homes.address like :address ", { address: `%${trimAddress}%` })
-      .orWhere('MATCH(homes.bathrooms) AGAINST (:bathrooms IN BOOLEAN MODE)', { bathrooms })
-      .andWhere('homes.bedrooms= :bedrooms', { bedrooms })
+      .where(address ? "REPLACE(homes.address, ' ', '') LIKE '%' :address '%'" : '1=1', { address: trimAddress })
+      .andWhere(bathrooms ? 'homes.bathrooms = :bathrooms' : '1=1', { bathrooms })
+      .andWhere(bedrooms ? 'homes.bedrooms = :bathrooms' : '1=1', { bedrooms })
+      .andWhere(minPrice ? 'homes.price >= :minPrice' : '1=1', { minPrice: Number(minPrice) })
+      .andWhere(maxPrice ? 'homes.price <= :maxPrice' : '1=1', { maxPrice: Number(maxPrice) })
       .leftJoin('homes.idUser', 'users.idUser')
       .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
       .leftJoin('homes.images', 'homeImages')
       .leftJoinAndSelect('homes.orders', 'orders')
       .groupBy('homes.idHome')
-      .having('orders.checkin >= CAST(:checkout as date)  OR orders.checkout <= CAST(:checkin as date)  OR orders.checkin is null', { checkout, checkin })
+      .having(checkout ? 'orders.checkin >= CAST(:checkout as date) OR orders.checkin IS NULL' : '1=1', { checkout })
+      .andHaving(checkin ? 'orders.checkout <= CAST(:checkin as date) OR orders.checkout IS NULL' : '1=1', { checkin })
       .getMany()
   }
 
