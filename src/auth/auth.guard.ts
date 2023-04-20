@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserSchema>,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -29,7 +29,9 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
-      const user = await this.userRepository.findOneByOrFail({ idUser: payload.sub });
+      const user = await this.userRepository.findOneByOrFail({
+        idUser: payload.sub,
+      });
       const returnPayload = {
         email: payload.email,
         role: user.role,
@@ -37,7 +39,7 @@ export class AuthGuard implements CanActivate {
         active: user.active,
         iat: payload.iat,
         exp: payload.exp,
-      }
+      };
       request['user'] = returnPayload;
     } catch {
       throw new UnauthorizedException();
