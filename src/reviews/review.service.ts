@@ -9,7 +9,6 @@ export class ReviewService {
     private reviewRepository: Repository<ReviewSchema>,
   ) {}
   async create(body): Promise<Object> {
-    console.log(body, 11);
     return this.reviewRepository.save(body);
   }
   async findByKeyword(keyword): Promise<Object> {
@@ -104,8 +103,8 @@ export class ReviewService {
         'homes.idHome',
         'homes.title',
       ])
-      .leftJoin('reviews.idHome', 'homes.idHome')
-      .leftJoin('reviews.idUser', 'users.idUser')
+      .leftJoin('reviews.idHome', 'homes')
+      .leftJoin('reviews.idUser', 'users')
       .getOne();
   }
 }

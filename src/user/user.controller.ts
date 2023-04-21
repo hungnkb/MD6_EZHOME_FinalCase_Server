@@ -30,7 +30,6 @@ export class UserController {
 
   @Put()
   update(@Body() body: UpdateUserDto): Promise<any> {
-    console.log(body);
     return this.userService.update(body);
   }
 
@@ -57,7 +56,6 @@ export class UserController {
 
   @Post('/change-password')
   changePassword(@Body() body: any): Promise<any> {
-    console.log(body);
     return this.userService.changePassword(body);
   }
 }

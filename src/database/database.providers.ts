@@ -31,7 +31,6 @@ export const databaseProviders = [
         ],
         synchronize: false,
         migrations: ['dist/migrations/*.js'],
-        migrationsRun: true,
       });
       return dataSource.initialize();
     },
