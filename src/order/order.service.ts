@@ -121,14 +121,18 @@ export class OrderService {
 
   async updateOrderStatus(idOrder: number, newStatus: string): Promise<any> {
     let order = await this.findByIdOrder(idOrder);
-    const now = Date.now();
-    if (order.status === 'cancelled') {
-      if (order.checkin - now <= 1) {
-        return null;
-      }
+    console.log(order);
+    const now = new Date().toJSON().toString();
+    const dateNow = now.substring(8,10);
+    console.log(dateNow);
+    const dateOrder = order.checkin.substring(8,10)
+    // @ts-ignore
+    if ((dateOrder - dateNow) < 2) {
+      throw new HttpException("Error", HttpStatus.BAD_REQUEST);
+    } else {
+      order.status = "cancelled";
+      await this.orderRepository.save(order);
+      throw new HttpException('Change Status Success', HttpStatus.OK);
     }
-    order.status = newStatus;
-    await this.orderRepository.save(order);
-    return;
   }
 }
