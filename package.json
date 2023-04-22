@@ -21,7 +21,8 @@
     "typeorm": "npm run build && npx typeorm -d dist/src/database/data-source.js",
     "migrate:create": "npm run typeorm -- migration:generate",
     "migrate:up": "npm run typeorm -- migration:run",
-    "migrate:down": "npm run typeorm -- migration:revert"
+    "migrate:down": "npm run typeorm -- migration:revert",
+    "gitadd": "git add .; git commit -m 'add'; git pull origin dev"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
