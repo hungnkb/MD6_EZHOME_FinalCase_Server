@@ -136,7 +136,6 @@ export class UserService {
         });
     }
   }
-
   async resetpassword(body): Promise<any> {
     const { email, token, password } = body;
     const hashPassword = await bcrypt.hash(password, 10);

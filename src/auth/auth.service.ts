@@ -54,7 +54,6 @@ export class AuthService {
           active: user.active,
         };
         let accessToken = await this.assignToken(payload);
-
         return { accessToken };
       }
     } catch {
@@ -67,7 +66,6 @@ export class AuthService {
           sub: returnUser.idUser,
           active: returnUser.active,
         };
-
         bcrypt
           .hash(
             returnUser.email,
@@ -80,8 +78,8 @@ export class AuthService {
               `<a href="http://localhost:3002/api/v1/users/active?email=${returnUser.email}&token=${hashedEmail}"> Verify </a>`,
             );
           });
-        let accessToken = await this.assignToken(payload);
-        return { accessToken };
+        let accessTokenWithNewUser = await this.assignToken(payload);
+        return { accessTokenWithNewUser };
       }
     }
   }
