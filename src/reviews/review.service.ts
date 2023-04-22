@@ -9,7 +9,6 @@ export class ReviewService {
     private reviewRepository: Repository<ReviewSchema>,
   ) {}
   async create(body): Promise<Object> {
-    console.log(body, 11);
     return this.reviewRepository.save(body);
   }
   async findByKeyword(keyword): Promise<Object> {
@@ -84,28 +83,27 @@ export class ReviewService {
             .leftJoin('reviews.idUser', 'users')
             .getMany()
     }
-
-    async findByIdReview(idReview: number): Promise<any> {
-        // return this.orderRepository.findOneOrFail({
-        //     relations: ['users', 'homes'],
-        //     loadRelationIds: true,
-        //     where: {
-        //         idOrder
-        //     },
-        // });
-        return this.reviewRepository
-            .createQueryBuilder('reviews')
-            .where({idReview})
-            .select([
-                'reviews',
-                'users.email',
-                'users.image',
-                'users.idUser',
-                'homes.idHome',
-                'homes.title',
-            ])
-            .leftJoin('reviews.idHome', 'homes')
-            .leftJoin('reviews.idUser', 'users')
-            .getOne()
-    }
+  async findByIdReview(idReview: number): Promise<any> {
+    // return this.orderRepository.findOneOrFail({
+    //     relations: ['users', 'homes'],
+    //     loadRelationIds: true,
+    //     where: {
+    //         idOrder
+    //     },
+    // });
+    return this.reviewRepository
+      .createQueryBuilder('reviews')
+      .where({ idReview })
+      .select([
+        'reviews',
+        'users.email',
+        'users.image',
+        'users.idUser',
+        'homes.idHome',
+        'homes.title',
+      ])
+      .leftJoin('reviews.idHome', 'homes')
+      .leftJoin('reviews.idUser', 'users')
+      .getOne();
+  }
 }
