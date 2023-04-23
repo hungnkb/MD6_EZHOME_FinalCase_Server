@@ -253,10 +253,13 @@ export class HomeService {
   async getTop(top: string): Promise<any> {
     return this.homeRepository
       .createQueryBuilder('homes')
-      .leftJoin('homes.orders', 'orders')     
-      .select(['homes', 'orders', 'COUNT(orders.idOrder) as countOrder'])
+      .leftJoin('homes.orders', 'orders') 
+      .leftJoin('homes.idCategory','categories')    
+      .leftJoin('homes.images', 'images')
+      .select(['homes', 'orders', 'COUNT(orders.idOrder) as countOrder', 'categories.categoryName', 'images'])
       .groupBy('homes.idHome')
-      .orderBy('countOrder')
-      .execute()
+      .orderBy('countOrder', 'DESC')
+      .limit(5)
+      .getMany()
   }
 }
