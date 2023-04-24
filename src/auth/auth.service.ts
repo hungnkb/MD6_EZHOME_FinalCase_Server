@@ -54,7 +54,6 @@ export class AuthService {
           active: user.active,
         };
         let accessToken = await this.assignToken(payload);
-
         return { accessToken };
       }
     } catch {
@@ -67,7 +66,6 @@ export class AuthService {
           sub: returnUser.idUser,
           active: returnUser.active,
         };
-
         bcrypt
           .hash(
             returnUser.email,
@@ -76,12 +74,12 @@ export class AuthService {
           .then((hashedEmail) => {
             mailer.sendMail(
               returnUser.email,
-              'Xin Chào,Hãy xác thực tài khoản EZHome 0.1',
-              `<a href="http://localhost:3002/api/v1/users/active?email=${returnUser.email}&token=${hashedEmail}"> Verify </a>`,
+              'Welcome to EZHOME',
+              `<a href="http://localhost:3002/api/v1/users/active?email=${returnUser.email}&token=${hashedEmail}"> Active your account here </a>`,
             );
           });
-        let accessToken = await this.assignToken(payload);
-        return { accessToken };
+        let accessTokenWithNewUser = await this.assignToken(payload);
+        return { accessTokenWithNewUser };
       }
     }
   }

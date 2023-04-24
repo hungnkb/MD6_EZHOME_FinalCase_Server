@@ -21,7 +21,8 @@
     "typeorm": "npm run build && npx typeorm -d dist/src/database/data-source.js",
     "migrate:create": "npm run typeorm -- migration:generate",
     "migrate:up": "npm run typeorm -- migration:run",
-    "migrate:down": "npm run typeorm -- migration:revert"
+    "migrate:down": "npm run typeorm -- migration:revert",
+    "gitadd": "git add .; git commit -m 'add'; git pull origin dev"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -29,8 +30,12 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.3",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/platform-socket.io": "^9.4.0",
+    "@nestjs/platform-ws": "^9.4.0",
     "@nestjs/typeorm": "^9.0.1",
+    "@nestjs/websockets": "^9.4.0",
     "@types/multer": "^1.4.7",
+    "@types/socket.io": "^3.0.2",
     "bcrypt": "^5.1.0",
     "buffer-to-stream": "^1.0.0",
     "class-transformer": "^0.5.1",
@@ -41,7 +46,9 @@
     "nodemailer": "^6.9.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.13"
+    "socket.io": "^4.6.1",
+    "typeorm": "^0.3.13",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

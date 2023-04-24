@@ -12,6 +12,7 @@ import { HomeModule } from './modules/home/home.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderModule } from './modules/order/order.module';
 import { ReviewModule } from './modules/review/review.module';
+import { NotificationGateway } from './notification/notification.gateway';
 
 @Module({
   imports: [
@@ -52,6 +53,6 @@ import { ReviewModule } from './modules/review/review.module';
     ReviewModule,
   ],
   controllers: [AppController],
-  providers: [HealthCheckService, CloudinaryService],
+  providers: [HealthCheckService, CloudinaryService, NotificationGateway],
 })
 export class AppModule {}

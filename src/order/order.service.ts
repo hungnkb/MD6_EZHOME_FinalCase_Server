@@ -4,6 +4,7 @@ import { CreateOrderDto } from 'src/order/order.dto';
 import { Repository } from 'typeorm';
 import { HomeService } from 'src/home/home.service';
 import { plainToClass, classToPlain } from 'class-transformer';
+import { OrderStatus } from 'src/order/order.entity';
 
 @Injectable()
 export class OrderService {
@@ -11,7 +12,7 @@ export class OrderService {
     @Inject('ORDER_REPOSITORY')
     private orderRepository: Repository<OrderSchema>,
     private homeService: HomeService,
-  ) {}
+  ) { }
 
   async create(body: CreateOrderDto): Promise<Object> {
     const checkOrderByOwner = await this.isOrderByOwner(
@@ -119,16 +120,32 @@ export class OrderService {
     return this.findAll();
   }
 
+  async updateOrderCharge(idOrder: number, addCharged: number): Promise<Object> {
+    const order = await this.orderRepository.findOneByOrFail({ idOrder });
+    order.status = OrderStatus._DONE;
+    order.charged = order.charged + addCharged;
+    return this.orderRepository.save(order);
+  }
+
   async updateOrderStatus(idOrder: number, newStatus: string): Promise<any> {
     let order = await this.findByIdOrder(idOrder);
-    const now = Date.now();
-    if (order.status === 'cancelled') {
-      if (order.checkin - now <= 1) {
-        return null;
-      }
+    const now = new Date().toJSON().toString();
+    const dateNow = now.substring(8, 10);
+    console.log(dateNow);
+    const dateOrder = order.checkin.substring(8, 10)
+    // @ts-ignore
+    if ((dateOrder - dateNow) < 2) {
+      throw new HttpException("Error", HttpStatus.BAD_REQUEST);
+    } else {
+      order.status = "cancelled";
+      await this.orderRepository.save(order);
+      throw new HttpException('Change Status Success', HttpStatus.OK);
     }
-    order.status = newStatus;
-    await this.orderRepository.save(order);
-    return;
+  }
+
+  async checkout(body: any): Promise<any> {
+    const idOrder = body.order.idOrder;
+    const addCharged = body.addCharge;
+    return this.updateOrderCharge(idOrder, addCharged)
   }
 }

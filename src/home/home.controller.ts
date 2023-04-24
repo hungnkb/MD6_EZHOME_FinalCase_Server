@@ -18,7 +18,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 export class HomeController {
-  constructor(private readonly homeService: HomeService) {}
+  constructor(private readonly homeService: HomeService) { }
 
   @UseGuards(AuthGuard)
   @Post()
@@ -41,5 +41,10 @@ export class HomeController {
   @Post('status')
   updateStatus(@Body() body: any): Promise<any> {
     return this.homeService.updateStatus(body.idHome, body.status);
+  }
+
+  @Get('top')
+  getTop(@Query() query: any): Promise<any> {
+    return this.homeService.getTop(query.top);
   }
 }

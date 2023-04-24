@@ -26,11 +26,10 @@ export const databaseProviders = [
           HomeSchema,
           HomeImageSchema,
           CategorySchema,
-          ReviewSchema,
           OrderSchema,
         ],
         synchronize: false,
-        migrations: ['dist/migrations/*.js'],
+        migrations: ['dist/migrations/*.js']
       });
       return dataSource.initialize();
     },

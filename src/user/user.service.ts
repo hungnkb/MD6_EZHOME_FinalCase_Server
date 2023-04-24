@@ -75,6 +75,7 @@ export class UserService {
 
   async update(body: UpdateUserDto): Promise<any> {
     let { email, phone, fullName, address, role } = body;
+    console.log(body);
 
     let user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
@@ -119,6 +120,7 @@ export class UserService {
   }
 
   async sendLinkForgotPassword(body): Promise<any> {
+    console.log(body);
     if (!body.email) {
       throw new HttpException('INsert your email', HttpStatus.BAD_REQUEST);
     } else {
@@ -134,7 +136,6 @@ export class UserService {
         });
     }
   }
-
   async resetpassword(body): Promise<any> {
     const { email, token, password } = body;
     const hashPassword = await bcrypt.hash(password, 10);
@@ -146,8 +147,8 @@ export class UserService {
           .set({ password: hashPassword })
           .where({ email })
           .execute();
+        throw new HttpException('Reset password success', HttpStatus.OK);
       }
-      throw new HttpException('Reset password success', HttpStatus.OK);
     });
   }
 
