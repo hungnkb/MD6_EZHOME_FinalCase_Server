@@ -250,4 +250,32 @@ export class HomeService {
       .where('idHome = :id', { id: idHome })
       .execute();
   }
+
+  async getrevenue(query){
+    console.log(query);
+    if (query.month && query.year){
+      return this.homeRepository.createQueryBuilder('homes')
+        .select('homes.title')
+        .addSelect('SUM(orders.charged)', 'revenue')
+        .innerJoin('orders', 'orders', 'homes.idHome = orders.home')
+        .where('homes.idUser = :userId', { userId: query.idUser })
+        .andWhere('orders.checkin >= :startDate', { startDate: `${query.year}-${query.month}-01` })
+        .andWhere('orders.checkin <= :endDate', { endDate: `${query.year}-${query.month}-30` })
+        .groupBy('homes.idHome')
+        .getRawMany()
+    } else {
+      const getMonth = new Date();
+      const currentMonth = getMonth.getMonth() + 1;
+      const getYear = new Date().getFullYear()
+      return this.homeRepository.createQueryBuilder('homes')
+        .select('homes.title')
+        .addSelect('SUM(orders.charged)', 'revenue')
+        .innerJoin('orders', 'orders', 'homes.idHome = orders.home')
+        .where('homes.idUser = :userId', { userId: query.idUser })
+        .andWhere('orders.checkin >= :startDate', { startDate: `${getYear}-${currentMonth}-01` })
+        .andWhere('orders.checkin <= :endDate', { endDate: `${getYear}-${currentMonth}-30` })
+        .groupBy('homes.idHome')
+        .getRawMany()
+    }
+  }
 }

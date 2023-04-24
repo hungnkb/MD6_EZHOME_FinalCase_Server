@@ -42,4 +42,9 @@ export class HomeController {
   updateStatus(@Body() body: any): Promise<any> {
     return this.homeService.updateStatus(body.idHome, body.status);
   }
+
+  @Get('revenue')
+  getrevenue(@Query() query: string): Promise<any>{
+    return this.homeService.getrevenue(query)
+  }
 }
