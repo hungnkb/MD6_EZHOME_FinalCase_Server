@@ -18,7 +18,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 export class HomeController {
-  constructor(private readonly homeService: HomeService) {}
+  constructor(private readonly homeService: HomeService) { }
 
   @UseGuards(AuthGuard)
   @Post()
@@ -44,7 +44,13 @@ export class HomeController {
   }
 
   @Get('revenue')
-  getrevenue(@Query() query: string): Promise<any>{
+  getrevenue(@Query() query: string): Promise<any> {
     return this.homeService.getrevenue(query)
+  }
+
+
+  @Get('top')
+  getTop(@Query() query: any): Promise<any> {
+    return this.homeService.getTop(query.top);
   }
 }

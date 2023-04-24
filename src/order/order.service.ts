@@ -85,9 +85,10 @@ export class OrderService {
       return this.orderRepository
         .createQueryBuilder('orders')
         .where({ idUser })
-        .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser'])
-        .leftJoinAndSelect('orders.idHome', 'homes.idHome')
+        .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser', 'owner.idUser'])
+        .leftJoinAndSelect('orders.idHome', 'homes')
         .leftJoin('orders.idUser', 'users.idUser')
+        .innerJoin('homes.idUser', 'owner')
         .getMany();
     }
   }
@@ -131,7 +132,6 @@ export class OrderService {
     let order = await this.findByIdOrder(idOrder);
     const now = new Date().toJSON().toString();
     const dateNow = now.substring(8, 10);
-    console.log(dateNow);
     const dateOrder = order.checkin.substring(8, 10)
     // @ts-ignore
     if ((dateOrder - dateNow) < 2) {
@@ -147,5 +147,28 @@ export class OrderService {
     const idOrder = body.order.idOrder;
     const addCharged = body.addCharge;
     return this.updateOrderCharge(idOrder, addCharged)
+  }
+
+  async getRevenueOfMonth(query){
+    if (query.month && query.year){
+      return this.orderRepository
+        .createQueryBuilder('orders')
+        .select("SUM(orders.charged)", "total_revenue")
+        .innerJoin("homes", "homes", 'orders.home = homes.idHome')
+        .where("homes.idUser = :userId", { userId: 6 })
+        .andWhere("MONTH(orders.checkin) = :month AND MONTH(orders.checkout) = :month AND YEAR(orders.checkin) = :year", { month: query.month, year: query.year })
+        .getRawOne();
+    } else {
+      const getMonth = new Date();
+      const currentMonth = getMonth.getMonth() + 1;
+      const getYear = new Date().getFullYear()
+      return this.orderRepository
+        .createQueryBuilder('orders')
+        .select("SUM(orders.charged)", "total_revenue")
+        .innerJoin("homes", "homes", 'orders.home = homes.idHome')
+        .where("homes.idUser = :userId", { userId: query.idUser })
+        .andWhere("MONTH(orders.checkin) = :month AND MONTH(orders.checkout) = :month AND YEAR(orders.checkin) = :year", { month: currentMonth, year: getYear })
+        .getRawOne();
+    }
   }
 }

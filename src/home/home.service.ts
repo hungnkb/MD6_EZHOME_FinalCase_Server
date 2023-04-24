@@ -6,7 +6,6 @@ import { UserService } from 'src/user/user.service';
 import { HomeSchema } from './entities/home.entity';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { HomeImageSchema } from './entities/homeImage.entity';
-import { log } from 'console';
 
 @Injectable()
 export class HomeService {
@@ -17,7 +16,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -240,7 +239,7 @@ export class HomeService {
       .getMany();
   }
 
-  async updateStatus(idHome: number, status: boolean) {
+  async updateStatus(idHome: number, status: boolean): Promise<any> {
     return this.homeRepository
       .createQueryBuilder()
       .update(HomeSchema)
@@ -276,6 +275,19 @@ export class HomeService {
         .andWhere('orders.checkin <= :endDate', { endDate: `${getYear}-${currentMonth}-30` })
         .groupBy('homes.idHome')
         .getRawMany()
-    }
+    }}
+
+
+  async getTop(top: string): Promise<any> {
+    return this.homeRepository
+      .createQueryBuilder('homes')
+      .leftJoin('homes.orders', 'orders') 
+      .leftJoin('homes.idCategory','categories')    
+      .leftJoin('homes.images', 'images')
+      .select(['homes', 'orders', 'COUNT(orders.idOrder) as countOrder', 'categories.categoryName', 'images'])
+      .groupBy('homes.idHome')
+      .orderBy('countOrder', 'DESC')
+      .limit(5)
+      .getMany()
   }
 }
