@@ -85,9 +85,10 @@ export class OrderService {
       return this.orderRepository
         .createQueryBuilder('orders')
         .where({ idUser })
-        .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser'])
-        .leftJoinAndSelect('orders.idHome', 'homes.idHome')
+        .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser', 'owner.idUser'])
+        .leftJoinAndSelect('orders.idHome', 'homes')
         .leftJoin('orders.idUser', 'users.idUser')
+        .innerJoin('homes.idUser', 'owner')
         .getMany();
     }
   }
@@ -131,7 +132,6 @@ export class OrderService {
     let order = await this.findByIdOrder(idOrder);
     const now = new Date().toJSON().toString();
     const dateNow = now.substring(8, 10);
-    console.log(dateNow);
     const dateOrder = order.checkin.substring(8, 10)
     // @ts-ignore
     if ((dateOrder - dateNow) < 2) {

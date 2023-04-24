@@ -75,7 +75,6 @@ export class UserService {
 
   async update(body: UpdateUserDto): Promise<any> {
     let { email, phone, fullName, address, role } = body;
-    console.log(body);
 
     let user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
@@ -120,7 +119,6 @@ export class UserService {
   }
 
   async sendLinkForgotPassword(body): Promise<any> {
-    console.log(body);
     if (!body.email) {
       throw new HttpException('INsert your email', HttpStatus.BAD_REQUEST);
     } else {
