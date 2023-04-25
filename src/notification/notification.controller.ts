@@ -20,8 +20,8 @@ export class NotificationController {
 
   @UseGuards(AuthGuard)
   @Patch()
-  update(@Query() query) {
+  update(@Query() query: any) {
     return this.notificationService.updateStatus(query)
   }
-  
+
 }
