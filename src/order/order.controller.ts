@@ -14,7 +14,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 export class OrderController {
-  constructor(private orderService: OrderService) { }
+  constructor(private orderService: OrderService) {}
   @Post()
   create(@Body() body: CreateOrderDto): Promise<any> {
     return this.orderService.create(body);
@@ -39,5 +39,15 @@ export class OrderController {
   @Post('/checkout')
   checkout(@Body() body: any): Promise<any> {
     return this.orderService.checkout(body);
+  }
+
+  @Get('total-revenue-of-month')
+  getRevenueOfMonth(@Query() query): Promise<any>{
+    return this.orderService.getRevenueOfMonth(query);
+  }
+
+  @Get('total-revenue-of-year')
+  getRevenueOfYear(@Query() query): Promise<any>{
+    return this.orderService.getRevenueOfYear(query);
   }
 }

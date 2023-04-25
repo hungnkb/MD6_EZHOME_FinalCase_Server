@@ -13,6 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderModule } from './modules/order/order.module';
 import { ReviewModule } from './modules/review/review.module';
 import { NotificationGateway } from './notification/notification.gateway';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -41,6 +42,10 @@ import { NotificationGateway } from './notification/notification.gateway';
             path: 'reviews',
             module: ReviewModule,
           },
+          {
+            path: 'notifications',
+            module: NotificationModule,
+          }
         ],
       },
     ]),
@@ -51,8 +56,12 @@ import { NotificationGateway } from './notification/notification.gateway';
     OrderModule,
     CloudinaryModule,
     ReviewModule,
+    NotificationModule,
   ],
   controllers: [AppController],
-  providers: [HealthCheckService, CloudinaryService, NotificationGateway],
+  providers: [
+    HealthCheckService,
+    CloudinaryService,
+    NotificationGateway],
 })
-export class AppModule {}
+export class AppModule { }

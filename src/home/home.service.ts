@@ -16,7 +16,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -250,16 +250,50 @@ export class HomeService {
       .execute();
   }
 
+  async getrevenue(query){
+    console.log(query);
+    if (query.month && query.year){
+      return this.homeRepository.createQueryBuilder('homes')
+        .select('homes.title')
+        .addSelect('SUM(orders.charged)', 'revenue')
+        .innerJoin('orders', 'orders', 'homes.idHome = orders.home')
+        .where('homes.idUser = :userId', { userId: query.idUser })
+        .andWhere('orders.checkin >= :startDate', { startDate: `${query.year}-${query.month}-01` })
+        .andWhere('orders.checkin <= :endDate', { endDate: `${query.year}-${query.month}-30` })
+        .groupBy('homes.idHome')
+        .getRawMany()
+    } else {
+      const getMonth = new Date();
+      const currentMonth = getMonth.getMonth() + 1;
+      const getYear = new Date().getFullYear()
+      return this.homeRepository.createQueryBuilder('homes')
+        .select('homes.title')
+        .addSelect('SUM(orders.charged)', 'revenue')
+        .innerJoin('orders', 'orders', 'homes.idHome = orders.home')
+        .where('homes.idUser = :userId', { userId: query.idUser })
+        .andWhere('orders.checkin >= :startDate', { startDate: `${getYear}-${currentMonth}-01` })
+        .andWhere('orders.checkin <= :endDate', { endDate: `${getYear}-${currentMonth}-30` })
+        .groupBy('homes.idHome')
+        .getRawMany()
+    }}
+
+
   async getTop(top: string): Promise<any> {
     return this.homeRepository
       .createQueryBuilder('homes')
-      .leftJoin('homes.orders', 'orders') 
-      .leftJoin('homes.idCategory','categories')    
+      .leftJoin('homes.orders', 'orders')
+      .leftJoin('homes.idCategory', 'categories')
       .leftJoin('homes.images', 'images')
-      .select(['homes', 'orders', 'COUNT(orders.idOrder) as countOrder', 'categories.categoryName', 'images'])
+      .select([
+        'homes',
+        'orders',
+        'COUNT(orders.idOrder) as countOrder',
+        'categories.categoryName',
+        'images',
+      ])
       .groupBy('homes.idHome')
       .orderBy('countOrder', 'DESC')
       .limit(5)
-      .getMany()
+      .getMany();
   }
 }
