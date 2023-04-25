@@ -45,4 +45,9 @@ export class OrderController {
   getRevenueOfMonth(@Query() query): Promise<any>{
     return this.orderService.getRevenueOfMonth(query);
   }
+
+  @Get('total-revenue-of-year')
+  getRevenueOfYear(@Query() query): Promise<any>{
+    return this.orderService.getRevenueOfYear(query);
+  }
 }

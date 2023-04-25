@@ -155,7 +155,7 @@ export class OrderService {
         .createQueryBuilder('orders')
         .select("SUM(orders.charged)", "total_revenue")
         .innerJoin("homes", "homes", 'orders.home = homes.idHome')
-        .where("homes.idUser = :userId", { userId: 6 })
+        .where("homes.idUser = :userId", { userId: query.idUser })
         .andWhere("MONTH(orders.checkin) = :month AND MONTH(orders.checkout) = :month AND YEAR(orders.checkin) = :year", { month: query.month, year: query.year })
         .getRawOne();
     } else {
@@ -168,6 +168,29 @@ export class OrderService {
         .innerJoin("homes", "homes", 'orders.home = homes.idHome')
         .where("homes.idUser = :userId", { userId: query.idUser })
         .andWhere("MONTH(orders.checkin) = :month AND MONTH(orders.checkout) = :month AND YEAR(orders.checkin) = :year", { month: currentMonth, year: getYear })
+        .getRawOne();
+    }
+  }
+
+  async getRevenueOfYear(query){
+    if (query.year){
+      return this.orderRepository
+        .createQueryBuilder('orders')
+        .select("SUM(orders.charged)", "total_revenue")
+        .innerJoin("homes", "homes", 'orders.home = homes.idHome')
+        .where("homes.idUser = :userId", { userId: query.idUser })
+        .andWhere("YEAR(orders.checkout) = :year AND YEAR(orders.checkin) = :year", { year: query.year })
+        .getRawOne();
+    } else {
+      const getMonth = new Date();
+      const currentMonth = getMonth.getMonth() + 1;
+      const getYear = new Date().getFullYear()
+      return this.orderRepository
+        .createQueryBuilder('orders')
+        .select("SUM(orders.charged)", "total_revenue")
+        .innerJoin("homes", "homes", 'orders.home = homes.idHome')
+        .where("homes.idUser = :userId", { userId: query.idUser })
+        .andWhere("YEAR(orders.checkout) = :year AND YEAR(orders.checkin) = :year", { year: getYear })
         .getRawOne();
     }
   }
