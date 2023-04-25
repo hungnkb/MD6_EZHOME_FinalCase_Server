@@ -7,6 +7,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 import * as process from 'process';
 import { OrderSchema } from 'src/order/order.entity';
+import { NotificationSchema } from 'src/notification/notification.entity';
 dotenv.config();
 
 export const dataSourceOptions: DataSourceOptions = {
@@ -23,6 +24,7 @@ export const dataSourceOptions: DataSourceOptions = {
     HomeImageSchema,
     CategorySchema,
     OrderSchema,
+    NotificationSchema,
   ],
   migrations: ['dist/migrations/*.js'],
 };
