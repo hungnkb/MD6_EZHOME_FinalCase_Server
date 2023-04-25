@@ -5,10 +5,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
-import { HomeImageSchema } from '../home/entities/homeImage.entity';
-import { HomeSchema } from '../home/entities/home.entity';
 
 export enum NotificationStatus {
   _SEEN = 'seen',
