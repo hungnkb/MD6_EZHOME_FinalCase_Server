@@ -20,11 +20,17 @@ export class NotificationService {
     if (page > 0) {
       const skip = (page - 1) * itemPerPage;   
       
-      return this.notificationRepository.find({
-        where: { user: Number(idUser) },
-        skip: skip,
-        take: itemPerPage,
-      });
+      return this.notificationRepository
+      .createQueryBuilder()
+      .where('user = :id', {id: idUser})
+      .skip(skip)
+      .take(5)
+      .getMany()
+      // find({
+      //   where: { user: parseInt(idUser) },
+      //   skip: skip,
+      //   take: itemPerPage,
+      // });
     }
     throw new HttpException('Bad request', HttpStatus.BAD_REQUEST)
   }
