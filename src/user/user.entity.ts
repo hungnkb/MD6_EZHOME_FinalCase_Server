@@ -1,3 +1,4 @@
+import { NotificationSchema } from 'src/notification/notification.entity';
 import { OrderSchema } from 'src/order/order.entity';
 import { ReviewSchema } from 'src/reviews/review.entity';
 import {
@@ -57,4 +58,11 @@ export class UserSchema {
   @OneToMany((type) => ReviewSchema, (reviews) => reviews.idReview)
   @JoinColumn({ name: 'reviews', referencedColumnName: 'idReview' })
   reviews: ReviewSchema[];
+
+  @OneToMany(
+    (type) => NotificationSchema,
+    (notifications) => notifications.idNotification,
+  )
+  @JoinColumn({ name: 'notifications', referencedColumnName: 'idNotification' })
+  notifications: NotificationSchema[];
 }

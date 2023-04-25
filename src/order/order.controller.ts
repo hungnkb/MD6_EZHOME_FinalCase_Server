@@ -14,7 +14,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 export class OrderController {
-  constructor(private orderService: OrderService) { }
+  constructor(private orderService: OrderService) {}
   @Post()
   create(@Body() body: CreateOrderDto): Promise<any> {
     return this.orderService.create(body);
