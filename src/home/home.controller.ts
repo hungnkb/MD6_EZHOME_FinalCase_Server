@@ -18,7 +18,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 export class HomeController {
-  constructor(private readonly homeService: HomeService) { }
+  constructor(private readonly homeService: HomeService) {}
 
   @UseGuards(AuthGuard)
   @Post()

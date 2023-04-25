@@ -12,7 +12,7 @@ export class OrderService {
     @Inject('ORDER_REPOSITORY')
     private orderRepository: Repository<OrderSchema>,
     private homeService: HomeService,
-  ) { }
+  ) {}
 
   async create(body: CreateOrderDto): Promise<Object> {
     const checkOrderByOwner = await this.isOrderByOwner(
@@ -85,7 +85,12 @@ export class OrderService {
       return this.orderRepository
         .createQueryBuilder('orders')
         .where({ idUser })
-        .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser', 'owner.idUser'])
+        .select([
+          'orders',
+          'users.idUser.fullName',
+          'users.idUser.idUser',
+          'owner.idUser',
+        ])
         .leftJoinAndSelect('orders.idHome', 'homes')
         .leftJoin('orders.idUser', 'users.idUser')
         .innerJoin('homes.idUser', 'owner')
@@ -121,7 +126,10 @@ export class OrderService {
     return this.findAll();
   }
 
-  async updateOrderCharge(idOrder: number, addCharged: number): Promise<Object> {
+  async updateOrderCharge(
+    idOrder: number,
+    addCharged: number,
+  ): Promise<Object> {
     const order = await this.orderRepository.findOneByOrFail({ idOrder });
     order.status = OrderStatus._DONE;
     order.charged = order.charged + addCharged;
@@ -132,12 +140,12 @@ export class OrderService {
     let order = await this.findByIdOrder(idOrder);
     const now = new Date().toJSON().toString();
     const dateNow = now.substring(8, 10);
-    const dateOrder = order.checkin.substring(8, 10)
+    const dateOrder = order.checkin.substring(8, 10);
     // @ts-ignore
-    if ((dateOrder - dateNow) < 2) {
-      throw new HttpException("Error", HttpStatus.BAD_REQUEST);
+    if (dateOrder - dateNow < 2) {
+      throw new HttpException('Error', HttpStatus.BAD_REQUEST);
     } else {
-      order.status = "cancelled";
+      order.status = 'cancelled';
       await this.orderRepository.save(order);
       throw new HttpException('Change Status Success', HttpStatus.OK);
     }
@@ -146,6 +154,6 @@ export class OrderService {
   async checkout(body: any): Promise<any> {
     const idOrder = body.order.idOrder;
     const addCharged = body.addCharge;
-    return this.updateOrderCharge(idOrder, addCharged)
+    return this.updateOrderCharge(idOrder, addCharged);
   }
 }

@@ -16,7 +16,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -253,13 +253,19 @@ export class HomeService {
   async getTop(top: string): Promise<any> {
     return this.homeRepository
       .createQueryBuilder('homes')
-      .leftJoin('homes.orders', 'orders') 
-      .leftJoin('homes.idCategory','categories')    
+      .leftJoin('homes.orders', 'orders')
+      .leftJoin('homes.idCategory', 'categories')
       .leftJoin('homes.images', 'images')
-      .select(['homes', 'orders', 'COUNT(orders.idOrder) as countOrder', 'categories.categoryName', 'images'])
+      .select([
+        'homes',
+        'orders',
+        'COUNT(orders.idOrder) as countOrder',
+        'categories.categoryName',
+        'images',
+      ])
       .groupBy('homes.idHome')
       .orderBy('countOrder', 'DESC')
       .limit(5)
-      .getMany()
+      .getMany();
   }
 }
