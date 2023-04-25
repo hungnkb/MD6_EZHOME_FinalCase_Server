@@ -62,6 +62,10 @@ export class UserSchema {
   @OneToMany(
     (type) => NotificationSchema,
     (notifications) => notifications.idNotification,
+    {
+      cascade: true,
+      onDelete: 'CASCADE',
+    }
   )
   @JoinColumn({ name: 'notifications', referencedColumnName: 'idNotification' })
   notifications: NotificationSchema[];
