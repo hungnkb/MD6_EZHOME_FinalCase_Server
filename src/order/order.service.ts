@@ -132,9 +132,12 @@ export class OrderService {
     let order = await this.findByIdOrder(idOrder);
     const now = new Date().toJSON().toString();
     const dateNow = now.substring(8, 10);
+    const monthNow = now.substring(5, 7);
     const dateOrder = order.checkin.substring(8, 10)
+    const monthOrder = order.checkin.substring(5, 7)
+    console.log(dateOrder);
     // @ts-ignore
-    if ((dateOrder - dateNow) < 2) {
+    if (((dateOrder - dateNow) < 2) && (monthOrder - monthNow) < 1) {
       throw new HttpException("Error", HttpStatus.BAD_REQUEST);
     } else {
       order.status = "cancelled";
