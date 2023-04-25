@@ -18,7 +18,7 @@ export class NotificationService {
     const itemPerPage = 5;
     
     if (page > 0) {
-      const skip = (page - 1) * itemPerPage;
+      const skip = (page - 1) * itemPerPage;   
       
       return this.notificationRepository.find({
         where: { user: Number(idUser) },

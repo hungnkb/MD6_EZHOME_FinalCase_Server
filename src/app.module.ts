@@ -14,6 +14,8 @@ import { OrderModule } from './modules/order/order.module';
 import { ReviewModule } from './modules/review/review.module';
 import { NotificationGateway } from './notification/notification.gateway';
 import { NotificationModule } from './modules/notification/notification.module';
+import { NotificationService } from './notification/notification.service';
+import { NotificationProvider } from './notification/notification.provider';
 
 @Module({
   imports: [
@@ -62,6 +64,9 @@ import { NotificationModule } from './modules/notification/notification.module';
   providers: [
     HealthCheckService,
     CloudinaryService,
-    NotificationGateway],
+    NotificationGateway,
+    NotificationService,
+    ...NotificationProvider,
+  ],
 })
 export class AppModule { }
