@@ -37,52 +37,52 @@ export class ReviewService {
       .getMany();
   }
 
-    async findByIdUser(idUser: number): Promise<Object> {
-        // return this.orderRepository.find({
-        //     relations: ['idUser', 'idHome'],
-        //     loadRelationIds: true,
-        //     where: {
-        //         idUser
-        //     }
-        // })
-        return this.reviewRepository
-            .createQueryBuilder('reviews')
-            .where({idUser})
-            .select([
-                'reviews',
-                'users.email',
-                'users.image',
-                'users.idUser',
-                'homes.idHome',
-                'homes.title',
-            ])
-            .leftJoin('reviews.idHome', 'homes.idHome')
-            .leftJoin('reviews.idUser', 'users.idUser')
-            .getMany()
-    }
-    async findByIdHome(idHome: number): Promise<Object> {
-        // return this.orderRepository.find({
-        //     relations: ['idUser', 'idHome'],
-        //     loadRelationIds: true,
-        //     where: {
-        //         idHome
-        //     }
-        // })
-        return this.reviewRepository
-            .createQueryBuilder('reviews')
-            .where({idHome})
-            .select([
-                'reviews',
-                'users.email',
-                'users.image',
-                'users.idUser',
-                'homes.idHome',
-                'homes.title',
-            ])
-            .leftJoin('reviews.idHome', 'homes')
-            .leftJoin('reviews.idUser', 'users')
-            .getMany()
-    }
+  async findByIdUser(idUser: number): Promise<Object> {
+    // return this.orderRepository.find({
+    //     relations: ['idUser', 'idHome'],
+    //     loadRelationIds: true,
+    //     where: {
+    //         idUser
+    //     }
+    // })
+    return this.reviewRepository
+      .createQueryBuilder('reviews')
+      .where({ idUser })
+      .select([
+        'reviews',
+        'users.email',
+        'users.image',
+        'users.idUser',
+        'homes.idHome',
+        'homes.title',
+      ])
+      .leftJoin('reviews.idHome', 'homes.idHome')
+      .leftJoin('reviews.idUser', 'users.idUser')
+      .getMany();
+  }
+  async findByIdHome(idHome: number): Promise<Object> {
+    // return this.orderRepository.find({
+    //     relations: ['idUser', 'idHome'],
+    //     loadRelationIds: true,
+    //     where: {
+    //         idHome
+    //     }
+    // })
+    return this.reviewRepository
+      .createQueryBuilder('reviews')
+      .where({ idHome })
+      .select([
+        'reviews',
+        'users.email',
+        'users.image',
+        'users.idUser',
+        'homes.idHome',
+        'homes.title',
+      ])
+      .leftJoin('reviews.idHome', 'homes')
+      .leftJoin('reviews.idUser', 'users')
+      .getMany();
+  }
   async findByIdReview(idReview: number): Promise<any> {
     // return this.orderRepository.findOneOrFail({
     //     relations: ['users', 'homes'],
