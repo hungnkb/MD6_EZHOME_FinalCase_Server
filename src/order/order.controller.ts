@@ -40,4 +40,14 @@ export class OrderController {
   checkout(@Body() body: any): Promise<any> {
     return this.orderService.checkout(body);
   }
+
+  @Get('total-revenue-of-month')
+  getRevenueOfMonth(@Query() query): Promise<any>{
+    return this.orderService.getRevenueOfMonth(query);
+  }
+
+  @Get('total-revenue-of-year')
+  getRevenueOfYear(@Query() query): Promise<any>{
+    return this.orderService.getRevenueOfYear(query);
+  }
 }

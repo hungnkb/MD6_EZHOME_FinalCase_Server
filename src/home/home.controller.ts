@@ -43,6 +43,12 @@ export class HomeController {
     return this.homeService.updateStatus(body.idHome, body.status);
   }
 
+  @Get('revenue')
+  getrevenue(@Query() query: string): Promise<any> {
+    return this.homeService.getrevenue(query)
+  }
+
+
   @Get('top')
   getTop(@Query() query: any): Promise<any> {
     return this.homeService.getTop(query.top);
