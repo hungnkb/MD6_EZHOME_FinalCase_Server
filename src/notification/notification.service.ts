@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { NotificationSchema, NotificationStatus } from './notification.entity';
 
@@ -14,20 +14,31 @@ export class NotificationService {
     return this.notificationRepository.save(newNotification);
   }
 
-  async findByIdUser(idUser: number): Promise<any> {    
-    return this.notificationRepository.find({
-      where: { user: idUser }
-    });
+  async findByIdUser({idUser, page}): Promise<any> {
+    const itemPerPage = 5;
+    
+    if (page > 0) {
+      const skip = (page - 1) * itemPerPage;   
+      
+      return this.notificationRepository
+      .createQueryBuilder()
+      .where('user = :id', {id: idUser})
+      .skip(skip)
+      .take(5)
+      .getMany()
+      // find({
+      //   where: { user: parseInt(idUser) },
+      //   skip: skip,
+      //   take: itemPerPage,
+      // });
+    }
+    throw new HttpException('Bad request', HttpStatus.BAD_REQUEST)
   }
 
-  async updateStatus(idNotification: number): Promise<any> {
-    console.log(idNotification);
-    
-    return this.notificationRepository.
-      createQueryBuilder()
-      .update(NotificationSchema)
-      .set({ status: 'seen' })
-      .where('idNotification = :id', { id: idNotification })
-      .execute();
+  async updateStatus(idNotification: any): Promise<any> {
+    return this.notificationRepository.update(
+      idNotification, {
+      status: NotificationStatus._SEEN
+    });
   }
 }
