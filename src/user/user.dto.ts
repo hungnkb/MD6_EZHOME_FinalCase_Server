@@ -25,6 +25,7 @@ export class UpdateUserDto {
   address: string;
   googleEmail: string;
   role: UserRole;
+  image: string;
 }
 
 export class changePasswordDto {

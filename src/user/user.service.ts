@@ -74,7 +74,7 @@ export class UserService {
   }
 
   async update(body: UpdateUserDto): Promise<any> {
-    let { email, phone, fullName, address, role } = body;
+    let { email, phone, fullName, address, role, image } = body;
 
     let user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
@@ -83,7 +83,7 @@ export class UserService {
     let newUser = await this.userRepository
       .createQueryBuilder()
       .update(UserSchema)
-      .set({ phone, fullName, address, role })
+      .set({ phone, fullName, address, role, image })
       .where({ idUser: user.idUser })
       .execute();
     return newUser;
