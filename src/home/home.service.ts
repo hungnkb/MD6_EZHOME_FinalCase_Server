@@ -16,7 +16,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -223,13 +223,12 @@ export class HomeService {
   }
 
   async findAll(page: number): Promise<HomeSchema[]> {
-    console.log(page);
-    
     const itemsPerPage = 12;
     let skip = 0;
     if (page > 0) {
-      skip = (page - 1) * 12
-    };
+      skip = (page - 1) * 12;
+    }
+
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -261,33 +260,41 @@ export class HomeService {
   }
 
   async getrevenue(query) {
-    console.log(query);
     if (query.month && query.year) {
-      return this.homeRepository.createQueryBuilder('homes')
+      return this.homeRepository
+        .createQueryBuilder('homes')
         .select('homes.title')
         .addSelect('SUM(orders.charged)', 'revenue')
         .innerJoin('orders', 'orders', 'homes.idHome = orders.home')
         .where('homes.idUser = :userId', { userId: query.idUser })
-        .andWhere('orders.checkin >= :startDate', { startDate: `${query.year}-${query.month}-01` })
-        .andWhere('orders.checkin <= :endDate', { endDate: `${query.year}-${query.month}-30` })
+        .andWhere('orders.checkin >= :startDate', {
+          startDate: `${query.year}-${query.month}-01`,
+        })
+        .andWhere('orders.checkin <= :endDate', {
+          endDate: `${query.year}-${query.month}-30`,
+        })
         .groupBy('homes.idHome')
-        .getRawMany()
+        .getRawMany();
     } else {
       const getMonth = new Date();
       const currentMonth = getMonth.getMonth() + 1;
-      const getYear = new Date().getFullYear()
-      return this.homeRepository.createQueryBuilder('homes')
+      const getYear = new Date().getFullYear();
+      return this.homeRepository
+        .createQueryBuilder('homes')
         .select('homes.title')
         .addSelect('SUM(orders.charged)', 'revenue')
         .innerJoin('orders', 'orders', 'homes.idHome = orders.home')
         .where('homes.idUser = :userId', { userId: query.idUser })
-        .andWhere('orders.checkin >= :startDate', { startDate: `${getYear}-${currentMonth}-01` })
-        .andWhere('orders.checkin <= :endDate', { endDate: `${getYear}-${currentMonth}-30` })
+        .andWhere('orders.checkin >= :startDate', {
+          startDate: `${getYear}-${currentMonth}-01`,
+        })
+        .andWhere('orders.checkin <= :endDate', {
+          endDate: `${getYear}-${currentMonth}-30`,
+        })
         .groupBy('homes.idHome')
-        .getRawMany()
+        .getRawMany();
     }
   }
-
 
   async getTop(top: string): Promise<any> {
     return this.homeRepository
