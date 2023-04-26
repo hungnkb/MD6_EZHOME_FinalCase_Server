@@ -81,6 +81,7 @@ export class ReviewService {
       ])
       .leftJoin('reviews.idHome', 'homes')
       .leftJoin('reviews.idUser', 'users')
+      .orderBy('reviews.createdAt', 'DESC')
       .getMany();
   }
   async findByIdReview(idReview: number): Promise<any> {
