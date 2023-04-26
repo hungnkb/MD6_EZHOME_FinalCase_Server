@@ -12,7 +12,7 @@ export class OrderService {
     @Inject('ORDER_REPOSITORY')
     private orderRepository: Repository<OrderSchema>,
     private homeService: HomeService,
-  ) {}
+  ) { }
 
   async create(body: CreateOrderDto): Promise<Object> {
     const checkOrderByOwner = await this.isOrderByOwner(
@@ -20,13 +20,37 @@ export class OrderService {
       body.idUser,
     );
 
-    if (checkOrderByOwner) {
+    const isHomeAvailable = await this.isHomeAvailableByDate(body.idHome, body.checkin, body.checkout)
+
+    if (checkOrderByOwner && isHomeAvailable) {
       return this.orderRepository.save(body);
     }
     throw new HttpException(
       'You can not book your own home',
       HttpStatus.BAD_REQUEST,
     );
+  }
+
+  async isHomeAvailableByDate(idHome: number, checkin: Date, checkout: Date) {
+    const method1 = await this.orderRepository
+      .createQueryBuilder('orders')
+      .where('orders.idHome = :idHome', { idHome })
+      .andWhere('orders.status = "ongoing"')
+      .andWhere('orders.checkin <= CAST(:checkout as date)', { checkout })
+      .andWhere('orders.checkin >= CAST(:checkin as date)', { checkin })
+      .getMany();
+
+    const method2 = await this.orderRepository
+      .createQueryBuilder('orders')
+      .where('orders.idHome = :idHome', { idHome })
+      .andWhere('orders.status = "ongoing"')
+      .andWhere('orders.checkout >= CAST(:checkin as date)', { checkin })
+      .andWhere('orders.checkout <= CAST(:checkout as date)', { checkout })
+      .getMany();    
+    if ((method1.length + method2.length) > 0) {
+      throw new HttpException('Theses dates are not available', HttpStatus.BAD_REQUEST)
+    } 
+    return true;
   }
 
   async isOrderByOwner(idHome: number, idUser: number) {
@@ -42,10 +66,6 @@ export class OrderService {
   }
 
   async findAll(): Promise<Object> {
-    // return this.orderRepository.find({
-    //     relations: ['idUser', 'idHome'],
-    //     loadRelationIds: true,
-    // });
     return this.orderRepository
       .createQueryBuilder('orders')
       .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser'])
@@ -55,13 +75,6 @@ export class OrderService {
   }
 
   async findByIdOrder(idOrder: number): Promise<any> {
-    // return this.orderRepository.findOneOrFail({
-    //     relations: ['users', 'homes'],
-    //     loadRelationIds: true,
-    //     where: {
-    //         idOrder
-    //     },
-    // });
     return this.orderRepository
       .createQueryBuilder('orders')
       .where({ idOrder })
@@ -99,13 +112,6 @@ export class OrderService {
   }
 
   async findByIdHome(idHome: number): Promise<Object> {
-    // return this.orderRepository.find({
-    //     relations: ['idUser', 'idHome'],
-    //     loadRelationIds: true,
-    //     where: {
-    //         idHome
-    //     }
-    // })
     return this.orderRepository
       .createQueryBuilder('orders')
       .where({ idHome })
