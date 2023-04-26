@@ -23,5 +23,4 @@ export class NotificationController {
   update(@Query() query: any) {
     return this.notificationService.updateStatus(query)
   }
-
 }

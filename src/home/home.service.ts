@@ -16,7 +16,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -93,7 +93,7 @@ export class HomeService {
     ) {
       return this.searchHome(keyword);
     }
-    return this.findAll();
+    return this.findAll(keyword.page);
   }
 
   async findByIdHome(idHome: number): Promise<HomeSchema[]> {
@@ -222,7 +222,14 @@ export class HomeService {
       .getMany();
   }
 
-  async findAll() {
+  async findAll(page: number): Promise<HomeSchema[]> {
+    console.log(page);
+    
+    const itemsPerPage = 12;
+    let skip = 0;
+    if (page > 0) {
+      skip = (page - 1) * 12
+    };
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -236,6 +243,9 @@ export class HomeService {
       .leftJoin('homes.idUser', 'users.idUser')
       .leftJoinAndSelect('homes.idCategory', 'categories.idCateogry')
       .leftJoin('homes.images', 'homeImages')
+      .orderBy('homes.idHome', 'DESC')
+      .skip(skip)
+      .take(itemsPerPage)
       .getMany();
   }
 
@@ -250,9 +260,9 @@ export class HomeService {
       .execute();
   }
 
-  async getrevenue(query){
+  async getrevenue(query) {
     console.log(query);
-    if (query.month && query.year){
+    if (query.month && query.year) {
       return this.homeRepository.createQueryBuilder('homes')
         .select('homes.title')
         .addSelect('SUM(orders.charged)', 'revenue')
@@ -275,7 +285,8 @@ export class HomeService {
         .andWhere('orders.checkin <= :endDate', { endDate: `${getYear}-${currentMonth}-30` })
         .groupBy('homes.idHome')
         .getRawMany()
-    }}
+    }
+  }
 
 
   async getTop(top: string): Promise<any> {
