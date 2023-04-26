@@ -10,14 +10,18 @@ import { NotificationService } from './notification.service';
   namespace: '/notifications',
 })
 export class NotificationGateway {
-  constructor(private notificationService: NotificationService) { }
+  constructor(private notificationService: NotificationService) {}
 
   @WebSocketServer() wss: Server;
 
   @SubscribeMessage('send')
   async handleMessage(client: any, payload: any) {
     this.wss.emit('getNotification', payload);
-    await this.notificationService.create({ message: payload.message, dataUrl: payload.dataUrl, idUser: payload.idReciever })
+    await this.notificationService.create({
+      message: payload.message,
+      dataUrl: payload.dataUrl,
+      idUser: payload.idReciever,
+    });
     return;
   }
 }

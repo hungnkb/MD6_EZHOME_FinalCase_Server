@@ -47,7 +47,7 @@ import { NotificationProvider } from './notification/notification.provider';
           {
             path: 'notifications',
             module: NotificationModule,
-          }
+          },
         ],
       },
     ]),
@@ -69,4 +69,4 @@ import { NotificationProvider } from './notification/notification.provider';
     ...NotificationProvider,
   ],
 })
-export class AppModule { }
+export class AppModule {}

@@ -7,11 +7,7 @@ import { UserProvider } from 'src/user/user.provider';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [
-    ...NotificationProvider,
-    ...UserProvider,
-    NotificationService,
-  ],
+  providers: [...NotificationProvider, ...UserProvider, NotificationService],
   controllers: [NotificationController],
 })
-export class NotificationModule { }
+export class NotificationModule {}
