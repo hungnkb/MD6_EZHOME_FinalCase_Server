@@ -30,7 +30,6 @@ export class UserController {
 
   @Put()
   update(@Body() body: UpdateUserDto): Promise<any> {
-    console.log(body);
     return this.userService.update(body);
   }
 
