@@ -12,7 +12,7 @@ export class OrderService {
     @Inject('ORDER_REPOSITORY')
     private orderRepository: Repository<OrderSchema>,
     private homeService: HomeService,
-  ) {}
+  ) { }
 
   async create(body: CreateOrderDto): Promise<Object> {
     const checkOrderByOwner = await this.isOrderByOwner(
@@ -20,13 +20,37 @@ export class OrderService {
       body.idUser,
     );
 
-    if (checkOrderByOwner) {
+    const isHomeAvailable = await this.isHomeAvailableByDate(body.idHome, body.checkin, body.checkout)
+
+    if (checkOrderByOwner && isHomeAvailable) {
       return this.orderRepository.save(body);
     }
     throw new HttpException(
       'You can not book your own home',
       HttpStatus.BAD_REQUEST,
     );
+  }
+
+  async isHomeAvailableByDate(idHome: number, checkin: Date, checkout: Date) {
+    const method1 = await this.orderRepository
+      .createQueryBuilder('orders')
+      .where('orders.idHome = :idHome', { idHome })
+      .andWhere('orders.status = "ongoing"')
+      .andWhere('orders.checkin <= CAST(:checkout as date)', { checkout })
+      .andWhere('orders.checkin >= CAST(:checkin as date)', { checkin })
+      .getMany();
+
+    const method2 = await this.orderRepository
+      .createQueryBuilder('orders')
+      .where('orders.idHome = :idHome', { idHome })
+      .andWhere('orders.status = "ongoing"')
+      .andWhere('orders.checkout >= CAST(:checkin as date)', { checkin })
+      .andWhere('orders.checkout <= CAST(:checkout as date)', { checkout })
+      .getMany();    
+    if ((method1.length + method2.length) > 0) {
+      throw new HttpException('Theses dates are not available', HttpStatus.BAD_REQUEST)
+    } 
+    return true;
   }
 
   async isOrderByOwner(idHome: number, idUser: number) {
@@ -42,10 +66,6 @@ export class OrderService {
   }
 
   async findAll(): Promise<Object> {
-    // return this.orderRepository.find({
-    //     relations: ['idUser', 'idHome'],
-    //     loadRelationIds: true,
-    // });
     return this.orderRepository
       .createQueryBuilder('orders')
       .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser'])
@@ -55,13 +75,6 @@ export class OrderService {
   }
 
   async findByIdOrder(idOrder: number): Promise<any> {
-    // return this.orderRepository.findOneOrFail({
-    //     relations: ['users', 'homes'],
-    //     loadRelationIds: true,
-    //     where: {
-    //         idOrder
-    //     },
-    // });
     return this.orderRepository
       .createQueryBuilder('orders')
       .where({ idOrder })
@@ -99,13 +112,6 @@ export class OrderService {
   }
 
   async findByIdHome(idHome: number): Promise<Object> {
-    // return this.orderRepository.find({
-    //     relations: ['idUser', 'idHome'],
-    //     loadRelationIds: true,
-    //     where: {
-    //         idHome
-    //     }
-    // })
     return this.orderRepository
       .createQueryBuilder('orders')
       .where({ idHome })
@@ -141,12 +147,11 @@ export class OrderService {
     const now = new Date().toJSON().toString();
     const dateNow = now.substring(8, 10);
     const monthNow = now.substring(5, 7);
-    const dateOrder = order.checkin.substring(8, 10)
-    const monthOrder = order.checkin.substring(5, 7)
-    console.log(dateOrder);
+    const dateOrder = order.checkin.substring(8, 10);
+    const monthOrder = order.checkin.substring(5, 7);
     // @ts-ignore
-    if (((dateOrder - dateNow) < 2) && (monthOrder - monthNow) < 1) {
-      throw new HttpException("Error", HttpStatus.BAD_REQUEST);
+    if (dateOrder - dateNow < 2 && monthOrder - monthNow < 1) {
+      throw new HttpException('Error', HttpStatus.BAD_REQUEST);
     } else {
       order.status = 'cancelled';
       await this.orderRepository.save(order);
@@ -160,48 +165,60 @@ export class OrderService {
     return this.updateOrderCharge(idOrder, addCharged);
   }
 
-  async getRevenueOfMonth(query){
-    if (query.month && query.year){
+  async getRevenueOfMonth(query) {
+    if (query.month && query.year) {
       return this.orderRepository
         .createQueryBuilder('orders')
-        .select("SUM(orders.charged)", "total_revenue")
-        .innerJoin("homes", "homes", 'orders.home = homes.idHome')
-        .where("homes.idUser = :userId", { userId: query.idUser })
-        .andWhere("MONTH(orders.checkin) = :month AND MONTH(orders.checkout) = :month AND YEAR(orders.checkin) = :year", { month: query.month, year: query.year })
+        .select('SUM(orders.charged)', 'total_revenue')
+        .innerJoin('homes', 'homes', 'orders.home = homes.idHome')
+        .where('homes.idUser = :userId', { userId: query.idUser })
+        .andWhere(
+          'MONTH(orders.checkin) = :month AND MONTH(orders.checkout) = :month AND YEAR(orders.checkin) = :year',
+          { month: query.month, year: query.year },
+        )
         .getRawOne();
     } else {
       const getMonth = new Date();
       const currentMonth = getMonth.getMonth() + 1;
-      const getYear = new Date().getFullYear()
+      const getYear = new Date().getFullYear();
       return this.orderRepository
         .createQueryBuilder('orders')
-        .select("SUM(orders.charged)", "total_revenue")
-        .innerJoin("homes", "homes", 'orders.home = homes.idHome')
-        .where("homes.idUser = :userId", { userId: query.idUser })
-        .andWhere("MONTH(orders.checkin) = :month AND MONTH(orders.checkout) = :month AND YEAR(orders.checkin) = :year", { month: currentMonth, year: getYear })
+        .select('SUM(orders.charged)', 'total_revenue')
+        .innerJoin('homes', 'homes', 'orders.home = homes.idHome')
+        .where('homes.idUser = :userId', { userId: query.idUser })
+        .andWhere(
+          'MONTH(orders.checkin) = :month AND MONTH(orders.checkout) = :month AND YEAR(orders.checkin) = :year',
+          { month: currentMonth, year: getYear },
+        )
         .getRawOne();
     }
   }
 
-  async getRevenueOfYear(query){
-    if (query.year){
+  async getRevenueOfYear(query) {
+    if (query.year) {
       return this.orderRepository
         .createQueryBuilder('orders')
-        .select("SUM(orders.charged)", "total_revenue")
-        .innerJoin("homes", "homes", 'orders.home = homes.idHome')
-        .where("homes.idUser = :userId", { userId: query.idUser })
-        .andWhere("YEAR(orders.checkout) = :year AND YEAR(orders.checkin) = :year", { year: query.year })
+        .select('SUM(orders.charged)', 'total_revenue')
+        .innerJoin('homes', 'homes', 'orders.home = homes.idHome')
+        .where('homes.idUser = :userId', { userId: query.idUser })
+        .andWhere(
+          'YEAR(orders.checkout) = :year AND YEAR(orders.checkin) = :year',
+          { year: query.year },
+        )
         .getRawOne();
     } else {
       const getMonth = new Date();
       const currentMonth = getMonth.getMonth() + 1;
-      const getYear = new Date().getFullYear()
+      const getYear = new Date().getFullYear();
       return this.orderRepository
         .createQueryBuilder('orders')
-        .select("SUM(orders.charged)", "total_revenue")
-        .innerJoin("homes", "homes", 'orders.home = homes.idHome')
-        .where("homes.idUser = :userId", { userId: query.idUser })
-        .andWhere("YEAR(orders.checkout) = :year AND YEAR(orders.checkin) = :year", { year: getYear })
+        .select('SUM(orders.charged)', 'total_revenue')
+        .innerJoin('homes', 'homes', 'orders.home = homes.idHome')
+        .where('homes.idUser = :userId', { userId: query.idUser })
+        .andWhere(
+          'YEAR(orders.checkout) = :year AND YEAR(orders.checkin) = :year',
+          { year: getYear },
+        )
         .getRawOne();
     }
   }

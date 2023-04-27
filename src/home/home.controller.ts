@@ -45,9 +45,8 @@ export class HomeController {
 
   @Get('revenue')
   getrevenue(@Query() query: string): Promise<any> {
-    return this.homeService.getrevenue(query)
+    return this.homeService.getrevenue(query);
   }
-
 
   @Get('top')
   getTop(@Query() query: any): Promise<any> {

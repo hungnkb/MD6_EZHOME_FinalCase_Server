@@ -65,7 +65,7 @@ export class UserSchema {
     {
       cascade: true,
       onDelete: 'CASCADE',
-    }
+    },
   )
   @JoinColumn({ name: 'notifications', referencedColumnName: 'idNotification' })
   notifications: NotificationSchema[];

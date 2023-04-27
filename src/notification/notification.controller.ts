@@ -1,10 +1,19 @@
-import { Query, Get, Post, Body, Controller, Put, Patch, UseGuards } from '@nestjs/common';
+import {
+  Query,
+  Get,
+  Post,
+  Body,
+  Controller,
+  Put,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) { }
+  constructor(private readonly notificationService: NotificationService) {}
 
   @UseGuards(AuthGuard)
   @Post()
@@ -21,7 +30,6 @@ export class NotificationController {
   @UseGuards(AuthGuard)
   @Patch()
   update(@Query() query: any) {
-    return this.notificationService.updateStatus(query)
+    return this.notificationService.updateStatus(query);
   }
-
 }
