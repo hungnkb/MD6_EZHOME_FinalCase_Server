@@ -98,7 +98,6 @@ export class UserService {
       .set({ active: true })
       .where({ email: query.email })
       .execute();
-
     return;
   }
 
@@ -145,7 +144,7 @@ export class UserService {
           .set({ password: hashPassword })
           .where({ email })
           .execute();
-        throw new HttpException('Reset password success', HttpStatus.OK);
+        return;
       }
     });
   }
