@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserSchema>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<UserSchema[] | undefined> {
     return this.userRepository.find();
@@ -162,7 +162,7 @@ export class UserService {
           .set({ password: hashNewPassword })
           .where({ email: email })
           .execute();
-        throw new HttpException('Change password success', HttpStatus.OK);
+        return activeUser;
       } else {
         throw new HttpException('Incorrect password', HttpStatus.BAD_REQUEST);
       }
@@ -175,7 +175,7 @@ export class UserService {
         .set({ password: hashNewPassword })
         .where({ email: email })
         .execute();
-      throw new HttpException('Change password success', HttpStatus.OK);
+      return activeUser;
     }
   }
 }
