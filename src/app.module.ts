@@ -16,6 +16,7 @@ import { NotificationGateway } from './notification/notification.gateway';
 import { NotificationModule } from './modules/notification/notification.module';
 import { NotificationService } from './notification/notification.service';
 import { NotificationProvider } from './notification/notification.provider';
+import { CouponModule } from './coupon/coupon.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { NotificationProvider } from './notification/notification.provider';
     CloudinaryModule,
     ReviewModule,
     NotificationModule,
+    CouponModule,
   ],
   controllers: [AppController],
   providers: [
