@@ -7,6 +7,7 @@ import {
   Entity
 } from "typeorm";
 import { UserSchema } from "../user/user.entity";
+import { HomeSchema } from "../home/entities/home.entity";
 
 
 @Entity({ name: "coupons" })
@@ -29,9 +30,16 @@ export class CouponSchema {
   @Column({ nullable: false})
   value: number;
 
+  @Column({nullable: true})
+  test: number;
+
   @ManyToOne((type) => UserSchema, (users) => users.idUser)
   @JoinColumn({ name: 'user', referencedColumnName: 'idUser' })
   user:number
+
+  @OneToMany((type) => HomeSchema, (homes) => homes.idHome)
+  @JoinColumn({ name: 'homes', referencedColumnName: 'idHome' })
+  homes: HomeSchema[];
 
 }
 

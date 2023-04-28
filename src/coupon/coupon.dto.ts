@@ -11,8 +11,11 @@ export class CreateCouponDto{
   endDate: Date;
 
   @IsNotEmpty()
-  vale: number;
+  value: number;
 
   @IsNotEmpty()
-  idUser: number;
+  user: number;
+
+  @IsNotEmpty()
+  couponname: string;
 }
