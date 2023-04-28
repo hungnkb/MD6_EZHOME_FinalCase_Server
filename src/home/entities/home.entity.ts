@@ -61,4 +61,8 @@ export class HomeSchema {
   @ManyToOne((type) => CategorySchema, (categories) => categories.idCategory)
   @JoinColumn({ name: 'idCategory', referencedColumnName: 'idCategory' })
   idCategory: number;
+
+  // @ManyToOne .. 
+  // @JoinColumn( ...coupon) 
+  // idCoupon: number
 }

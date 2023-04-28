@@ -69,4 +69,9 @@ export class UserSchema {
   )
   @JoinColumn({ name: 'notifications', referencedColumnName: 'idNotification' })
   notifications: NotificationSchema[];
+
+  // OneToMany()... Coupon
+  // @JoinColumn () .... Coupon
 }
+
+
