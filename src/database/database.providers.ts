@@ -8,7 +8,6 @@ import 'reflect-metadata';
 import { ReviewSchema } from 'src/reviews/review.entity';
 import { OrderSchema } from 'src/order/order.entity';
 import { NotificationSchema } from 'src/notification/notification.entity';
-import { CouponSchema } from "../coupon/coupon.entity";
 
 export const databaseProviders = [
   {
@@ -30,7 +29,6 @@ export const databaseProviders = [
           CategorySchema,
           OrderSchema,
           NotificationSchema,
-          CouponSchema
         ],
         synchronize: false,
         migrations: ['dist/migrations/*.js'],

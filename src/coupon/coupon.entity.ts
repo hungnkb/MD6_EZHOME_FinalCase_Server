@@ -1,48 +1,9 @@
-import {
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
-  Column,
-  Entity
-} from "typeorm";
-import { UserSchema } from "../user/user.entity";
-import { HomeSchema } from "../home/entities/home.entity";
+// import { PrimaryGeneratedColumn } from "typeorm";
 
-
-@Entity({ name: "coupons" })
-export class CouponSchema {
-  @PrimaryGeneratedColumn()
-  idCoupon: number;
-
-  @Column({ nullable: false })
-  couponname: string;
-
-  @Column({ type: "date", nullable: false })
-  createDate: Date;
-
-  @Column({ type: "date", nullable: false })
-  startDate: Date;
-
-  @Column({ type: "date", nullable: false })
-  endDate: Date;
-
-  @Column({ nullable: false})
-  value: number;
-
-  @Column({nullable: true})
-  test: number;
-
-  @ManyToOne((type) => UserSchema, (users) => users.idUser)
-  @JoinColumn({ name: 'user', referencedColumnName: 'idUser' })
-  user:number
-
-  @OneToMany((type) => HomeSchema, (homes) => homes.idHome)
-  @JoinColumn({ name: 'homes', referencedColumnName: 'idHome' })
-  homes: HomeSchema[];
-
-}
-
+// export class CouponSchema {
+//     @PrimaryGeneratedColumn()
+// idCoupon: number
+// }
 
 /*
 - createdAt: Date

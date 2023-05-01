@@ -9,7 +9,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { HomeModule } from './modules/home/home.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderModule } from './modules/order/order.module';
 import { ReviewModule } from './modules/review/review.module';
 import { NotificationGateway } from './notification/notification.gateway';
@@ -17,6 +16,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { NotificationService } from './notification/notification.service';
 import { NotificationProvider } from './notification/notification.provider';
 import { CouponModule } from './coupon/coupon.module';
+import { PaypalModule } from './modules/paypal/paypal.module';
 
 @Module({
   imports: [
@@ -50,9 +50,13 @@ import { CouponModule } from './coupon/coupon.module';
             module: NotificationModule,
           },
           {
+            path: 'payments',
+            module: PaypalModule,
+          },
+          {
             path: 'coupons',
-            module: CouponModule,
-          }
+            module: CouponModule
+          },
         ],
       },
     ]),
@@ -65,6 +69,7 @@ import { CouponModule } from './coupon/coupon.module';
     ReviewModule,
     NotificationModule,
     CouponModule,
+    PaypalModule,
   ],
   controllers: [AppController],
   providers: [
@@ -75,4 +80,4 @@ import { CouponModule } from './coupon/coupon.module';
     ...NotificationProvider,
   ],
 })
-export class AppModule {}
+export class AppModule { }
