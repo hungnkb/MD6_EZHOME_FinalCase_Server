@@ -8,7 +8,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CouponSchema } from "../coupon/coupon.entity";
 
 export enum UserRole {
   _ADMIN = 'admin',
@@ -71,9 +70,8 @@ export class UserSchema {
   @JoinColumn({ name: 'notifications', referencedColumnName: 'idNotification' })
   notifications: NotificationSchema[];
 
-  @OneToMany((type) => CouponSchema, (coupons) => coupons.idCoupon)
-  @JoinColumn({ name: 'coupons', referencedColumnName: 'idCoupon' })
-  coupons: CouponSchema[];
+  // OneToMany()... Coupon
+  // @JoinColumn () .... Coupon
 }
 
 

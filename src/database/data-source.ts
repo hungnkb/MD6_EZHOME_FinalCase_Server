@@ -8,7 +8,6 @@ import * as dotenv from 'dotenv';
 import * as process from 'process';
 import { OrderSchema } from 'src/order/order.entity';
 import { NotificationSchema } from 'src/notification/notification.entity';
-import { CouponSchema } from "../coupon/coupon.entity";
 dotenv.config();
 
 export const dataSourceOptions: DataSourceOptions = {
@@ -26,7 +25,6 @@ export const dataSourceOptions: DataSourceOptions = {
     CategorySchema,
     OrderSchema,
     NotificationSchema,
-    CouponSchema,
   ],
   migrations: ['dist/migrations/*.js'],
 };
