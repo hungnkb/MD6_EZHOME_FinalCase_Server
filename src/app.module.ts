@@ -52,7 +52,11 @@ import { PaypalModule } from './modules/paypal/paypal.module';
           {
             path: 'payments',
             module: PaypalModule,
-          }
+          },
+          {
+            path: 'coupons',
+            module: CouponModule
+          },
         ],
       },
     ]),
@@ -76,4 +80,4 @@ import { PaypalModule } from './modules/paypal/paypal.module';
     ...NotificationProvider,
   ],
 })
-export class AppModule {}
+export class AppModule { }
