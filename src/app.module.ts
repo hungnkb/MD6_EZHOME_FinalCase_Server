@@ -49,6 +49,10 @@ import { CouponModule } from './coupon/coupon.module';
             path: 'notifications',
             module: NotificationModule,
           },
+          {
+            path: 'coupons',
+            module: CouponModule,
+          }
         ],
       },
     ]),
