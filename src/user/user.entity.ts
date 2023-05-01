@@ -1,6 +1,8 @@
 import { NotificationSchema } from 'src/notification/notification.entity';
 import { OrderSchema } from 'src/order/order.entity';
 import { ReviewSchema } from 'src/reviews/review.entity';
+import { CouponSchema } from "../coupon/coupon.entity";
+
 import {
   Column,
   Entity,
@@ -70,8 +72,9 @@ export class UserSchema {
   @JoinColumn({ name: 'notifications', referencedColumnName: 'idNotification' })
   notifications: NotificationSchema[];
 
-  // OneToMany()... Coupon
-  // @JoinColumn () .... Coupon
+  @OneToMany((type) => CouponSchema, (coupons) => coupons.idCoupon)
+  @JoinColumn({ name: 'coupons', referencedColumnName: 'idCoupon' })
+  coupons: CouponSchema[];
 }
 
 
