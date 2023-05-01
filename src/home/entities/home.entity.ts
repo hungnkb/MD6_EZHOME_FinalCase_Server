@@ -12,7 +12,6 @@ import { CategorySchema } from './category.entity';
 import { HomeImageSchema } from './homeImage.entity';
 import { OrderSchema } from '../../order/order.entity';
 import { ReviewSchema } from '../../reviews/review.entity';
-import { CouponSchema } from '../../coupon/coupon.entity';
 
 @Entity({ name: 'homes' })
 export class HomeSchema {
@@ -63,7 +62,7 @@ export class HomeSchema {
   @JoinColumn({ name: 'idCategory', referencedColumnName: 'idCategory' })
   idCategory: number;
 
-  @ManyToOne((type) => CouponSchema, (coupons => coupons.idCoupon))
-  @JoinColumn({name: 'idCoupon', referencedColumnName: 'idCoupon'})
-  idCoupon: number
+  // @ManyToOne .. 
+  // @JoinColumn( ...coupon) 
+  // idCoupon: number
 }

@@ -10,8 +10,6 @@ import { UserProvider } from 'src/user/user.provider';
 // @ts-ignore
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from '../../auth/constants';
-// import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserSchema } from 'src/user/user.entity';
 
 @Module({
   imports: [
