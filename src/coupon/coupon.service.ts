@@ -15,6 +15,55 @@ export class CouponService{
   ) {}
 
   async create(body: CreateCouponDto): Promise<Object>{
-    return this.couponRepository.save(body)
+    return this.couponRepository.save(body);
+  
   }
+  async findByKeyword(keyword): Promise<Object> {
+    if (keyword.idCoupon) {
+      return this.findByIdCoupon(keyword.idCoupon);
+    } else if (keyword.idUser) {
+      return this.findByIdUser(keyword.idUser);
+    } 
+    return this.findAll();
+  }
+  async findAll() {
+    return this.couponRepository
+      .createQueryBuilder('coupons')
+      .select([
+        'coupons',
+        'users.idUser',
+        'users.email',
+        'users.image',
+      ])
+      .leftJoin('coupons.user', 'users')
+      .getMany();
+  }
+
+  async findByIdUser(idUser: number): Promise<Object> {
+    return this.couponRepository
+      .createQueryBuilder('coupons')
+      .where({ idUser })
+      .select([
+        'coupons',
+        'users.email',
+        'users.image',
+        'users.idUser'
+      ])
+      .leftJoin('coupons.user', 'users.idUser')
+      .getMany();
+  }
+  async findByIdCoupon(idCoupon: number): Promise<any> {
+    return this.couponRepository
+      .createQueryBuilder('coupons')
+      .where({ idCoupon })
+      .select([
+        'coupons',
+        'users.email',
+        'users.image',
+        'users.idUser',
+      ])
+      .leftJoin('coupons.user', 'users')
+      .getOne();
+  }
+
 }
