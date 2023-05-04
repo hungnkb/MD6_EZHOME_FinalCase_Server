@@ -97,6 +97,7 @@ export class HomeService {
   }
 
   async findByIdHome(idHome: number): Promise<HomeSchema[]> {
+    console.log(1);
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -106,13 +107,16 @@ export class HomeService {
         'users.phone',
         'categories.categoryName',
         'homeImages.urlHomeImage',
+        'coupons',
         'orders.checkin',
         'orders.checkout',
+        'homes.idCoupon'
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
       .leftJoin('homes.images', 'homeImages')
       .leftJoin('homes.orders', 'orders')
+      .leftJoin('homes.idCoupon', 'coupons')
       .where('homes.idHome = :id', { id: idHome })
       .getMany();
   }
