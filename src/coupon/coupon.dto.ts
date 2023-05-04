@@ -19,3 +19,12 @@ export class CreateCouponDto{
   @IsNotEmpty()
   couponname: string;
 }
+export class UpdateCouponDto{
+  idCoupon : number
+  couponname: string
+  createDate: Date
+  startDate: Date
+  enddate:Date
+  
+
+}
