@@ -15,9 +15,12 @@ import {
   OtherService,
 } from 'src/cloudinary/cloudinary.service';
 import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
+import { CouponService } from 'src/coupon/coupon.service';
+import { CouponProvider } from 'src/coupon/coupon.provider';
+import { CouponModule } from 'src/coupon/coupon.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule, CloudinaryModule],
+  imports: [DatabaseModule, UserModule, CloudinaryModule, CouponModule],
   providers: [
     ...CategoryProvider,
     ...HomeImageProvider,
@@ -25,10 +28,12 @@ import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
     ...databaseProviders,
     ...UserProvider,
     ...CloudinaryProvider,
+    ...CouponProvider,
     HomeService,
     UserService,
     CloudinaryService,
     OtherService,
+    CouponService,
   ],
   controllers: [HomeController],
 })

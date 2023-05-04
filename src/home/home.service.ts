@@ -6,6 +6,7 @@ import { UserService } from 'src/user/user.service';
 import { HomeSchema } from './entities/home.entity';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { HomeImageSchema } from './entities/homeImage.entity';
+import { CouponService } from 'src/coupon/coupon.service';
 
 @Injectable()
 export class HomeService {
@@ -16,6 +17,7 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
+    private couponService: CouponService,
   ) {}
 
   async create(body: CreateHomeDto): Promise<Object> {
@@ -313,5 +315,18 @@ export class HomeService {
       .orderBy('countOrder', 'DESC')
       .limit(5)
       .getMany();
+  }
+
+  async patch({idCoupon, idHome}): Promise<any> {
+    console.log(idCoupon);
+    
+    const coupon = await this.couponService.findByKeyword(idCoupon);
+    const dateNow = new Date();
+    const now = dateNow.getTime();
+    // const startDate = new Date(coupon.startDate)
+
+    console.log(coupon);
+    
+    // return this.homeRepository.update({idHome: body.idHome}, {idCoupon: body.idCoupon});
   }
 }
