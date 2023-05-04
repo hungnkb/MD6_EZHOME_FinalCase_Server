@@ -42,14 +42,14 @@ export class CouponService{
   async findByIdUser(idUser: number): Promise<Object> {
     return this.couponRepository
       .createQueryBuilder('coupons')
-      .where({ idUser })
+      .where({ user:idUser })
       .select([
         'coupons',
         'users.email',
         'users.image',
         'users.idUser'
       ])
-      .leftJoin('coupons.user', 'users.idUser')
+      .leftJoin('coupons.user', 'users')
       .getMany();
   }
   async findByIdCoupon(idCoupon: number): Promise<any> {
