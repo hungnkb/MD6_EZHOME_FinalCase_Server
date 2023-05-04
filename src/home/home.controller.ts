@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Query,
   Request,
@@ -51,5 +52,10 @@ export class HomeController {
   @Get('top')
   getTop(@Query() query: any): Promise<any> {
     return this.homeService.getTop(query.top);
+  }
+
+  @Patch()
+  patchHome(@Body() body: any): Promise<any> {
+    return this.homeService.patch(body);
   }
 }

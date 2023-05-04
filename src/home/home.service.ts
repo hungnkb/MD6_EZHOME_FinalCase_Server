@@ -6,6 +6,8 @@ import { UserService } from 'src/user/user.service';
 import { HomeSchema } from './entities/home.entity';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { HomeImageSchema } from './entities/homeImage.entity';
+import { CouponService } from 'src/coupon/coupon.service';
+import { plainToClass, classToPlain } from 'class-transformer';
 
 @Injectable()
 export class HomeService {
@@ -16,7 +18,8 @@ export class HomeService {
     private homeImageRepository: Repository<HomeImageSchema>,
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
-  ) {}
+    private couponService: CouponService,
+  ) { }
 
   async create(body: CreateHomeDto): Promise<Object> {
     const {
@@ -313,5 +316,22 @@ export class HomeService {
       .orderBy('countOrder', 'DESC')
       .limit(5)
       .getMany();
+  }
+
+  async patch(body: any): Promise<any> {
+    const coupon = await this.couponService.findByKeyword(body);
+    const couponObj = classToPlain(coupon);
+
+    const dateNow = new Date();
+    const now = dateNow.getTime();
+    const startDate = new Date(couponObj.startDate);
+    const start = startDate.getTime();
+    const endDate = new Date(couponObj.endDate);
+    const end = endDate.getTime();
+    if (now > end) {
+      throw new HttpException('Coupon is expired', HttpStatus.BAD_REQUEST,);
+    }
+    await this.homeRepository.update({ idHome: body.idHome }, { idCoupon: body.idCoupon });
+    return HttpStatus.OK;
   }
 }

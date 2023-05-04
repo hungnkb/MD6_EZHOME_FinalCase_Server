@@ -13,6 +13,8 @@ import { HomeModule } from '../home/home.module';
 import { UserService } from 'src/user/user.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { UserProvider } from 'src/user/user.provider';
+import { CouponService } from 'src/coupon/coupon.service';
+import { CouponProvider } from 'src/coupon/coupon.provider';
 
 @Module({
   imports: [DatabaseModule, UserModule, HomeModule],
@@ -20,13 +22,15 @@ import { UserProvider } from 'src/user/user.provider';
   providers: [
     ...databaseProviders,
     ...OrderProvider,
-    OrderService,
-    HomeService,
     ...HomeProvider,
     ...HomeImageProvider,
-    UserService,
     ...UserProvider,
+    ...CouponProvider,
+    UserService,
+    OrderService,
+    HomeService,
     CloudinaryService,
+    CouponService
   ],
 })
 export class OrderModule {}
