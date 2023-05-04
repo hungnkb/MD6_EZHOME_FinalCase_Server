@@ -172,7 +172,7 @@ export class HomeService {
       .getMany();
   }
 
-  async searchHome(keyword): Promise<any> {
+  async searchHome(keyword: any): Promise<any> {
     const {
       address,
       bedrooms,

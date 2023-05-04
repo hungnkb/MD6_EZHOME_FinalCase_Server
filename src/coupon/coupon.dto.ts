@@ -1,7 +1,6 @@
 import {IsNotEmpty} from "class-validator";
 
 export class CreateCouponDto{
-  @IsNotEmpty()
   createDate: Date;
 
   @IsNotEmpty()
@@ -22,9 +21,7 @@ export class CreateCouponDto{
 export class UpdateCouponDto{
   idCoupon : number
   couponname: string
-  createDate: Date
   startDate: Date
   enddate:Date
-  
 
 }

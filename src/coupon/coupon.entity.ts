@@ -19,7 +19,7 @@ export class CouponSchema {
   @Column({ nullable: false })
   couponname: string;
 
-  @Column({ type: "date", nullable: false })
+  @Column({ type: "date", nullable: true })
   createDate: Date;
 
   @Column({ type: "date", nullable: false })
@@ -28,8 +28,11 @@ export class CouponSchema {
   @Column({ type: "date", nullable: false })
   endDate: Date;
 
-  @Column({ nullable: false})
+  @Column({ nullable: false })
   value: number;
+
+  @Column({ nullable: true, default: false })
+  isDeleted: boolean;
 
   @OneToMany((type) => HomeSchema, (homes) => homes.idCoupon, {
     onDelete: 'CASCADE'
@@ -41,7 +44,7 @@ export class CouponSchema {
     onDelete: 'CASCADE'
   })
   @JoinColumn({ name: 'user', referencedColumnName: 'idUser' })
-  user:number
+  user: number
 
 }
 

@@ -9,23 +9,23 @@ import { log } from 'console';
 import { promises } from 'dns';
 
 @Injectable()
-export class CouponService{
+export class CouponService {
   constructor(
     @Inject('COUPON_REPOSITORY')
     private couponRepository: Repository<CouponSchema>,
     // private homeService: HomeService,
-  ) {}
+  ) { }
 
-  async create(body: CreateCouponDto): Promise<Object>{
+  async create(body: CreateCouponDto): Promise<Object> {
     return this.couponRepository.save(body);
-  
+
   }
   async findByKeyword(keyword): Promise<Object> {
     if (keyword.idCoupon) {
       return this.findByIdCoupon(keyword.idCoupon);
     } else if (keyword.idUser) {
       return this.findByIdUser(keyword.idUser);
-    } 
+    }
     return this.findAll();
   }
   async findAll() {
@@ -44,7 +44,7 @@ export class CouponService{
   async findByIdUser(idUser: number): Promise<Object> {
     return this.couponRepository
       .createQueryBuilder('coupons')
-      .where({ user:idUser })
+      .where({ user: idUser })
       .select([
         'coupons',
         'users.email',
@@ -54,6 +54,7 @@ export class CouponService{
       .leftJoin('coupons.user', 'users')
       .getMany();
   }
+
   async findByIdCoupon(idCoupon: number): Promise<any> {
     return this.couponRepository
       .createQueryBuilder('coupons')
@@ -71,16 +72,13 @@ export class CouponService{
   //   console.log(+idCoupon,2)
   //   // const id = Number(idCoupon)
 
-  //   const coupon = this.couponRepository.find({
-  //     where: {
-  //       idCoupon: idCoupon,
-  //     },
-  //     relations: ['homes', 'users']
-  //   })
 
-  //   coupon.homes.map
-  //   return coupon;
-    
-  // }
-    // return this.couponRepository.delete(idCoupon)}
+  async remove(query: any): Promise<any> {
+    return this.couponRepository.update({ idCoupon: query.idCoupon }, { isDeleted: true })
+  }
+
+  async update(body: any): Promise<any> {
+    return this.couponRepository.save(body)
+  }
 }
+
