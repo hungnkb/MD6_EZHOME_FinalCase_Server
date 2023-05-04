@@ -7,6 +7,7 @@ import {
   JoinColumn,
   OneToMany,
   Index,
+  OneToOne,
 } from 'typeorm';
 import { CategorySchema } from './category.entity';
 import { HomeImageSchema } from './homeImage.entity';
@@ -63,7 +64,7 @@ export class HomeSchema {
   @JoinColumn({ name: 'idCategory', referencedColumnName: 'idCategory' })
   idCategory: number;
 
-  @ManyToOne((type) => CouponSchema, (coupons => coupons.idCoupon))
+  @ManyToOne((type) => CouponSchema,(coupons => coupons.idCoupon), { onDelete: 'CASCADE'})
   @JoinColumn({name: 'idCoupon', referencedColumnName: 'idCoupon'})
   idCoupon: number
 }

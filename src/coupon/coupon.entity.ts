@@ -8,6 +8,7 @@ import {
   Entity
 } from "typeorm";
 import { UserSchema } from "../user/user.entity";
+import { HomeSchema } from "src/home/entities/home.entity";
 
 
 @Entity({ name: "coupons" })
@@ -30,7 +31,15 @@ export class CouponSchema {
   @Column({ nullable: false})
   value: number;
 
-  @ManyToOne((type) => UserSchema, (users) => users.idUser)
+  @OneToMany((type) => HomeSchema, (homes) => homes.idCoupon, {
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn({ name: 'home', referencedColumnName: 'idHome' })
+  home: HomeSchema[]
+
+  @ManyToOne((type) => UserSchema, (users) => users.idUser, {
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({ name: 'user', referencedColumnName: 'idUser' })
   user:number
 

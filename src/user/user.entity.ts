@@ -72,7 +72,9 @@ export class UserSchema {
   @JoinColumn({ name: 'notifications', referencedColumnName: 'idNotification' })
   notifications: NotificationSchema[];
 
-  @OneToMany((type) => CouponSchema, (coupons) => coupons.idCoupon)
+  @OneToMany((type) => CouponSchema, (coupons) => coupons.idCoupon, {
+    cascade: true
+  })
   @JoinColumn({ name: 'coupons', referencedColumnName: 'idCoupon' })
   coupons: CouponSchema[];
 }
