@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Get, Query,Request } from "@nestjs/common";
+import { Body, Controller, Post, Get, Query,Request, Delete, Patch } from "@nestjs/common";
 import { CouponService } from "./coupon.service";
-import { CreateCouponDto } from "./coupon.dto";
+import { CreateCouponDto, UpdateCouponDto } from "./coupon.dto";
 
 
 @Controller()
@@ -16,5 +16,13 @@ export class CouponController {
   findByKeyword(@Query() query: any, @Request() req): Promise<any> {
     return this.couponService.findByKeyword(query);
   }
+
+  // @Delete()
+  // remove(@Query() query:any, @Request() req): Promise<any> {
+  //   return this.couponService.remove(query)
+  // }
+ 
+  
+
 }
 

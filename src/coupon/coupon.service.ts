@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { HomeService } from 'src/home/home.service';
 import { plainToClass, classToPlain } from 'class-transformer';
 import { OrderSchema } from "../order/order.entity";
+import { log } from 'console';
+import { promises } from 'dns';
 
 @Injectable()
 export class CouponService{
@@ -65,5 +67,20 @@ export class CouponService{
       .leftJoin('coupons.user', 'users')
       .getOne();
   }
+  // async remove (idCoupon: number):Promise<any> {
+  //   console.log(+idCoupon,2)
+  //   // const id = Number(idCoupon)
 
+  //   const coupon = this.couponRepository.find({
+  //     where: {
+  //       idCoupon: idCoupon,
+  //     },
+  //     relations: ['homes', 'users']
+  //   })
+
+  //   coupon.homes.map
+  //   return coupon;
+    
+  // }
+    // return this.couponRepository.delete(idCoupon)}
 }
