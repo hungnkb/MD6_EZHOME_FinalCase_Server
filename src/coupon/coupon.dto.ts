@@ -23,4 +23,5 @@ export class UpdateCouponDto{
   couponname: string
   startDate: Date
   enddate:Date
+
 }

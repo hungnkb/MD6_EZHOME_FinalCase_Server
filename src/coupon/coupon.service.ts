@@ -68,6 +68,10 @@ export class CouponService {
       .leftJoin('coupons.user', 'users')
       .getOne();
   }
+  // async remove (idCoupon: number):Promise<any> {
+  //   console.log(+idCoupon,2)
+  //   // const id = Number(idCoupon)
+
 
   async remove(query: any): Promise<any> {
     return this.couponRepository.update({ idCoupon: query.idCoupon }, { isDeleted: true })
@@ -77,3 +81,4 @@ export class CouponService {
     return this.couponRepository.save(body)
   }
 }
+
