@@ -6,8 +6,6 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-  Index,
-  OneToOne,
 } from 'typeorm';
 import { CategorySchema } from './category.entity';
 import { HomeImageSchema } from './homeImage.entity';
