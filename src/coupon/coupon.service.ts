@@ -38,6 +38,7 @@ export class CouponService {
         'users.image',
       ])
       .leftJoin('coupons.user', 'users')
+      .orderBy('coupons.idCoupon', 'DESC')
       .getMany();
   }
 
@@ -52,6 +53,7 @@ export class CouponService {
         'users.idUser'
       ])
       .leftJoin('coupons.user', 'users')
+      .orderBy('coupons.idCoupon', 'DESC')
       .getMany();
   }
 
@@ -68,12 +70,9 @@ export class CouponService {
       .leftJoin('coupons.user', 'users')
       .getOne();
   }
-  // async remove (idCoupon: number):Promise<any> {
-  //   console.log(+idCoupon,2)
-  //   // const id = Number(idCoupon)
 
 
-  async remove(query: any): Promise<any> {
+  async remove(query: any): Promise<any> {    
     return this.couponRepository.update({ idCoupon: query.idCoupon }, { isDeleted: true })
   }
 

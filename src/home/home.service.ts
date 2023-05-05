@@ -100,7 +100,6 @@ export class HomeService {
   }
 
   async findByIdHome(idHome: number): Promise<HomeSchema[]> {
-    console.log(1);
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -143,6 +142,7 @@ export class HomeService {
         .leftJoin('homes.idUser', 'users')
         .leftJoin('homes.idCategory', 'categories')
         .leftJoin('homes.images', 'homeImages')
+        .leftJoinAndSelect('homes.idCoupon', 'coupons')
         .where('homes.idUser = :id', { id: idUser })
         .leftJoinAndSelect('homes.orders', 'orders')
         .leftJoinAndSelect('orders.idUser', 'customers')
@@ -150,6 +150,8 @@ export class HomeService {
         .andWhere('orders.status = :status', { status: `${status}` })
         .getMany();
     }
+    console.log(456);
+    
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -165,6 +167,7 @@ export class HomeService {
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
       .leftJoin('homes.images', 'homeImages')
+      .leftJoinAndSelect('homes.idCoupon', 'coupons')
       .where('homes.idUser = :id', { id: idUser })
       .leftJoinAndSelect('homes.orders', 'orders')
       .leftJoinAndSelect('orders.idUser', 'customers')
@@ -328,7 +331,8 @@ export class HomeService {
   async patch(body: any): Promise<any> {
     const coupon = await this.couponService.findByKeyword(body);
     const couponObj = classToPlain(coupon);
-
+    console.log(body.idCoupon);
+    
     const dateNow = new Date();
     const now = dateNow.getTime();
     const startDate = new Date(couponObj.startDate);
