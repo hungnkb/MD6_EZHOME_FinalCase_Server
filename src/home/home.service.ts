@@ -150,7 +150,6 @@ export class HomeService {
         .andWhere('orders.status = :status', { status: `${status}` })
         .getMany();
     }
-    console.log(456);
     
     return this.homeRepository
       .createQueryBuilder('homes')
@@ -331,7 +330,6 @@ export class HomeService {
   async patch(body: any): Promise<any> {
     const coupon = await this.couponService.findByKeyword(body);
     const couponObj = classToPlain(coupon);
-    console.log(body.idCoupon);
     
     const dateNow = new Date();
     const now = dateNow.getTime();
