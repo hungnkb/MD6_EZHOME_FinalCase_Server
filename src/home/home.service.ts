@@ -8,6 +8,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { HomeImageSchema } from './entities/homeImage.entity';
 import { CouponService } from 'src/coupon/coupon.service';
 import { plainToClass, classToPlain } from 'class-transformer';
+import { HttpStatusCode } from 'axios';
 
 @Injectable()
 export class HomeService {
@@ -150,7 +151,7 @@ export class HomeService {
         .andWhere('orders.status = :status', { status: `${status}` })
         .getMany();
     }
-    
+
     return this.homeRepository
       .createQueryBuilder('homes')
       .select([
@@ -328,19 +329,23 @@ export class HomeService {
   }
 
   async patch(body: any): Promise<any> {
-    const coupon = await this.couponService.findByKeyword(body);
-    const couponObj = classToPlain(coupon);
-    
-    const dateNow = new Date();
-    const now = dateNow.getTime();
-    const startDate = new Date(couponObj.startDate);
-    const start = startDate.getTime();
-    const endDate = new Date(couponObj.endDate);
-    const end = endDate.getTime();
-    if (now > end) {
-      throw new HttpException('Coupon is expired', HttpStatus.BAD_REQUEST,);
+    if (body.idCoupon > 0) {
+      const coupon = await this.couponService.findByKeyword(body);
+      const couponObj = classToPlain(coupon);
+
+      const dateNow = new Date();
+      const now = dateNow.getTime();
+      const startDate = new Date(couponObj.startDate);
+      const start = startDate.getTime();
+      const endDate = new Date(couponObj.endDate);
+      const end = endDate.getTime();
+      if (now > end) {
+        throw new HttpException('Coupon is expired', HttpStatus.BAD_REQUEST,);
+      }
+      await this.homeRepository.update({ idHome: body.idHome }, { idCoupon: body.idCoupon });
+    } else {
+      await this.homeRepository.update({ idHome: body.idHome }, { idCoupon: null })
     }
-    await this.homeRepository.update({ idHome: body.idHome }, { idCoupon: body.idCoupon });
-    return HttpStatus.OK;
+    return HttpStatusCode.Accepted;
   }
 }
