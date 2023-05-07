@@ -329,6 +329,19 @@ export class HomeService {
   }
 
   async patch(body: any): Promise<any> {
+    if (body.idCoupon) {
+      return this.updateCoupon(body);
+    } else if (body.price) {
+      return this.updatePrice(body);
+    }
+  }
+
+  async updatePrice({ price, idHome }) {
+    console.log(price, idHome);
+    return this.homeRepository.update({ idHome }, { price })
+  }
+
+  async updateCoupon(body: any) {
     if (body.idCoupon > 0) {
       const coupon = await this.couponService.findByKeyword(body);
       const couponObj = classToPlain(coupon);
