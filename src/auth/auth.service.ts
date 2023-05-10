@@ -75,7 +75,7 @@ export class AuthService {
             mailer.sendMail(
               returnUser.email,
               'Welcome to EZHOME',
-              `<a href="http://localhost:3002/api/v1/users/active?email=${returnUser.email}&token=${hashedEmail}"> Active your account here </a>`,
+              `<a href="${this.configService.get('BASE_SERVER_URL')}/api/v1/users/active?email=${returnUser.email}&token=${hashedEmail}"> Active your account here </a>`,
             );
           });
         let accessTokenWithNewUser = await this.assignToken(payload);

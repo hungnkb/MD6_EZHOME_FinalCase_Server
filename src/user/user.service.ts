@@ -8,12 +8,14 @@ import {
 } from './user.dto';
 import * as bcrypt from 'bcrypt';
 import * as process from 'process';
+import { ConfigService } from '@nestjs/config';
 const mailer = require('../shared/ulti/mail/mailer');
 
 export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserSchema>,
+    private configService: ConfigService
   ) { }
 
   async findAll(): Promise<UserSchema[] | undefined> {
@@ -47,7 +49,7 @@ export class UserService {
             mailer.sendMail(
               newUser.email,
               'Xin Chào,Hãy xác thực tài khoản EZHome 0.1',
-              `<a href="http://localhost:3002/api/v1/users/active?email=${newUser.email}&token=${hashedEmail}"> Verify </a>`,
+              `<a href="${this.configService.get('BASE_SERVER_URL')}/api/v1/users/active?email=${newUser.email}&token=${hashedEmail}"> Verify </a>`,
             );
           });
       }
@@ -128,7 +130,7 @@ export class UserService {
           mailer.sendMail(
             user.email,
             'Reset password',
-            `<a href="http://localhost:3000/reset-password?email=${user.email}&token=${hashedEmail}"> Reset Password </a>`,
+            `<a href="${this.configService.get('BASE_FRONTEND_URL')}/reset-password?email=${user.email}&token=${hashedEmail}"> Reset Password </a>`,
           );
         });
     }

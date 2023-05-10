@@ -10,10 +10,14 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Controller()
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
+    ) {}
 
   @Get()
   findAll(@Query() query): Promise<any> {
@@ -34,7 +38,7 @@ export class UserController {
   }
 
   @Get('/active')
-  @Redirect('http://localhost:3000/')
+  @Redirect('https://ezhome.vercel.app/')
   active(@Query() query: any): Promise<any> {
     return this.userService.active(query);
   }
