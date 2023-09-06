@@ -5,8 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { HomeSchema } from '../home/entities/home.entity';
-import { UserSchema } from 'src/user/user.entity';
+import { HomeSchema } from 'src/modules/home/entities/home.entity';
+import { UserSchema } from 'src/modules/user/user.entity';
 
 @Entity({ name: 'reviews' })
 export class ReviewSchema {
@@ -22,11 +22,11 @@ export class ReviewSchema {
   @Column({ nullable: true, default: () => 'CAST(NOW() AS DATE)' })
   createdAt: Date;
 
-  @ManyToOne((type) => HomeSchema, (homes) => homes.idHome)
+  @ManyToOne(() => HomeSchema, (homes) => homes.idHome)
   @JoinColumn({ name: 'idHome', referencedColumnName: 'idHome' })
   idHome: HomeSchema;
 
-  @ManyToOne((type) => UserSchema, (users) => users.idUser)
+  @ManyToOne(() => UserSchema, (users) => users.idUser)
   @JoinColumn({ name: 'idUser', referencedColumnName: 'idUser' })
   idUser: UserSchema;
 }

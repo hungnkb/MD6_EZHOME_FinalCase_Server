@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class FixCouponCascade1683192661710 implements MigrationInterface {
-  name = 'FixCouponCascade1683192661710';
+export class FixCouponCascade1683192617514 implements MigrationInterface {
+  name = 'FixCouponCascade1683192617514';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(

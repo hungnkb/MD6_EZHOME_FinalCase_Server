@@ -1,4 +1,3 @@
-import { UserSchema } from 'src/user/user.entity';
 import {
   Column,
   Entity,
@@ -6,15 +5,17 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  BaseEntity,
 } from 'typeorm';
 import { CategorySchema } from './category.entity';
 import { HomeImageSchema } from './homeImage.entity';
-import { OrderSchema } from '../../order/order.entity';
-import { ReviewSchema } from '../../reviews/review.entity';
-import { CouponSchema } from '../../coupon/coupon.entity';
+import { OrderSchema } from 'src/order/order.entity';
+import { ReviewSchema } from 'src/reviews/review.entity';
+import { CouponSchema } from 'src/modules/coupon/coupon.entity';
+import { UserSchema } from 'src/modules/user/user.entity';
 
 @Entity({ name: 'homes' })
-export class HomeSchema {
+export class HomeSchema extends BaseEntity {
   @PrimaryGeneratedColumn()
   idHome: number;
 
@@ -42,27 +43,29 @@ export class HomeSchema {
   @Column({ default: true })
   status: boolean;
 
-  @OneToMany((type) => HomeImageSchema, (homeimages) => homeimages.idHome)
+  @OneToMany(() => HomeImageSchema, (homeimages) => homeimages.idHome)
   @JoinColumn({ name: 'images', referencedColumnName: 'idHome' })
   images: HomeImageSchema[];
 
-  @OneToMany((type) => OrderSchema, (orders) => orders.idHome)
+  @OneToMany(() => OrderSchema, (orders) => orders.idHome)
   @JoinColumn({ name: 'orders', referencedColumnName: 'idHome' })
   orders: OrderSchema[];
 
-  @OneToMany((type) => ReviewSchema, (reviews) => reviews.idHome)
+  @OneToMany(() => ReviewSchema, (reviews) => reviews.idHome)
   @JoinColumn({ name: 'reviews', referencedColumnName: 'idHome' })
   reviews: ReviewSchema[];
 
-  @ManyToOne((type) => UserSchema, (users) => users.idUser)
+  @ManyToOne(() => UserSchema, (users) => users.idUser)
   @JoinColumn({ name: 'idUser', referencedColumnName: 'idUser' })
   idUser: number;
 
-  @ManyToOne((type) => CategorySchema, (categories) => categories.idCategory)
+  @ManyToOne(() => CategorySchema, (categories) => categories.idCategory)
   @JoinColumn({ name: 'idCategory', referencedColumnName: 'idCategory' })
   idCategory: number;
 
-  @ManyToOne((type) => CouponSchema,(coupons => coupons.idCoupon), { onDelete: 'CASCADE'})
-  @JoinColumn({name: 'idCoupon', referencedColumnName: 'idCoupon'})
-  idCoupon: number
+  @ManyToOne(() => CouponSchema, (coupons) => coupons.idCoupon, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'idCoupon', referencedColumnName: 'idCoupon' })
+  idCoupon: number;
 }

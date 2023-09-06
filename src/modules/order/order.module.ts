@@ -1,20 +1,19 @@
 import { Module } from '@nestjs/common/decorators';
-import { UserController } from '../../user/user.controller';
-import { DatabaseModule } from 'src/database/database.module';
-import { databaseProviders } from 'src/database/database.providers';
+import { DatabaseModule } from 'src/modules/database/database.module';
+import { databaseProviders } from 'src/modules/database/database.providers';
 import { OrderProvider } from 'src/order/order.provider';
 import { OrderController } from 'src/order/order.controller';
 import { OrderService } from 'src/order/order.service';
-import { HomeService } from 'src/home/home.service';
-import { HomeProvider } from 'src/home/provides/home.provider';
-import { HomeImageProvider } from 'src/home/provides/homeImage.provider';
 import { UserModule } from '../user/user.module';
 import { HomeModule } from '../home/home.module';
-import { UserService } from 'src/user/user.service';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { UserProvider } from 'src/user/user.provider';
-import { CouponService } from 'src/coupon/coupon.service';
-import { CouponProvider } from 'src/coupon/coupon.provider';
+import { CloudinaryService } from 'src/modules/cloudinary/cloudinary.service';
+import { CouponService } from 'src/modules/coupon/coupon.service';
+import { CouponProvider } from 'src/modules/coupon/coupon.provider';
+import { HomeProvider } from '../home/provides/home.provider';
+import { HomeImageProvider } from '../home/provides/homeImage.provider';
+import { HomeService } from '../home/home.service';
+import { UserProvider } from '../user/user.provider';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [DatabaseModule, UserModule, HomeModule],
@@ -30,7 +29,7 @@ import { CouponProvider } from 'src/coupon/coupon.provider';
     OrderService,
     HomeService,
     CloudinaryService,
-    CouponService
+    CouponService,
   ],
 })
 export class OrderModule {}

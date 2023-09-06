@@ -4,12 +4,11 @@ import {
   Post,
   Body,
   Controller,
-  Put,
   Patch,
   UseGuards,
 } from '@nestjs/common';
 import { NotificationService } from './notification.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
 
 @Controller()
 export class NotificationController {
@@ -23,7 +22,7 @@ export class NotificationController {
 
   @UseGuards(AuthGuard)
   @Get()
-  getByIdUser(@Query() query) {
+  getByIdUser(@Query() query: any) {
     return this.notificationService.findByIdUser(query);
   }
 

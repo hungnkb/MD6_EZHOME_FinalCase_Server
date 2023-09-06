@@ -1,27 +1,23 @@
-import { Inject, HttpException, HttpStatus, Redirect } from '@nestjs/common';
+import { Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { UserSchema } from './user.entity';
-import {
-  CreateUserDto,
-  CreateWithGoogleUserDto,
-  UpdateUserDto,
-} from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 import * as bcrypt from 'bcrypt';
 import * as process from 'process';
-const mailer = require('../shared/ulti/mail/mailer');
+const mailer = require('../../shared/ulti/mail/mailer');
 
 export class UserService {
   constructor(
     @Inject('USER_REPOSITORY')
     private userRepository: Repository<UserSchema>,
-  ) { }
+  ) {}
 
   async findAll(): Promise<UserSchema[] | undefined> {
     return this.userRepository.find();
   }
 
   async findByKeyword(obj: any): Promise<UserSchema | undefined> {
-    let user = await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: [{ idUser: obj }, { email: obj }, { phone: obj }],
     });
     if (user) {
@@ -32,10 +28,10 @@ export class UserService {
 
   async create(body: CreateUserDto): Promise<UserSchema> {
     try {
-      let { password, email, phone } = body;
+      const { password, email, phone } = body;
       const saltOrRounds = 10;
       const hashPassword = await bcrypt.hash(password, saltOrRounds);
-      let newUser = await this.userRepository.save({
+      const newUser = await this.userRepository.save({
         password: hashPassword,
         email,
         phone,
@@ -58,8 +54,8 @@ export class UserService {
   }
 
   async createWithGoogle(body): Promise<any> {
-    let email = body.email;
-    let newUser = await this.userRepository
+    const email = body.email;
+    const newUser = await this.userRepository
       .createQueryBuilder()
       .insert()
       .into('users')
@@ -74,13 +70,13 @@ export class UserService {
   }
 
   async update(body: UpdateUserDto): Promise<any> {
-    let { email, phone, fullName, address, role, image } = body;
+    const { email, phone, fullName, address, role, image } = body;
 
-    let user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
     }
-    let newUser = await this.userRepository
+    const newUser = await this.userRepository
       .createQueryBuilder()
       .update(UserSchema)
       .set({ phone, fullName, address, role, image })
@@ -90,9 +86,8 @@ export class UserService {
   }
 
   async active(query): Promise<any> {
-    let user = await this.findByKeyword(query.email);
-
-    let activeUser = await this.userRepository
+    await this.findByKeyword(query.email);
+    await this.userRepository
       .createQueryBuilder()
       .update('users')
       .set({ active: true })
@@ -102,18 +97,18 @@ export class UserService {
   }
 
   async activeHost({ idUser }): Promise<any> {
-    let user = await this.findByKeyword(idUser);
+    const user = await this.findByKeyword(idUser);
     if (user.idUser) {
       if (user.role == 'user') {
-        let activeUserHost = await this.userRepository
+        await this.userRepository
           .createQueryBuilder()
           .update('users')
           .set({ role: 'host' })
           .where({ idUser })
           .execute();
-        throw new HttpException('Active host success', HttpStatus.OK);
+        return 'Active host success';
       }
-      throw new HttpException('Active host already', HttpStatus.OK);
+      return 'Active host already';
     }
   }
 
@@ -121,7 +116,7 @@ export class UserService {
     if (!body.email) {
       throw new HttpException('INsert your email', HttpStatus.BAD_REQUEST);
     } else {
-      let user = await this.findByKeyword(body.email);
+      const user = await this.findByKeyword(body.email);
       bcrypt
         .hash(user.email, parseInt(process.env.BCRYPT_SALT_ROUND))
         .then((hashedEmail) => {
@@ -138,7 +133,7 @@ export class UserService {
     const hashPassword = await bcrypt.hash(password, 10);
     bcrypt.compare(email, token, async (err, result) => {
       if (result == true) {
-        let activeUser = await this.userRepository
+        await this.userRepository
           .createQueryBuilder()
           .update('users')
           .set({ password: hashPassword })
@@ -153,10 +148,10 @@ export class UserService {
     const { oldPassword, newPassword, email } = body;
     if (oldPassword != '') {
       const hashNewPassword = await bcrypt.hash(newPassword, 10);
-      let user = await this.findByKeyword(email);
-      let isMatch = await bcrypt.compare(oldPassword, user.password);
+      const user = await this.findByKeyword(email);
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
       if (isMatch) {
-        let activeUser = await this.userRepository
+        const activeUser = await this.userRepository
           .createQueryBuilder()
           .update('users')
           .set({ password: hashNewPassword })
@@ -168,14 +163,12 @@ export class UserService {
       }
     } else {
       const hashNewPassword = await bcrypt.hash(newPassword, 10);
-      let user = await this.findByKeyword(email);
-      let activeUser = await this.userRepository
+      return await this.userRepository
         .createQueryBuilder()
         .update('users')
         .set({ password: hashNewPassword })
         .where({ email: email })
         .execute();
-      return activeUser;
     }
   }
 }

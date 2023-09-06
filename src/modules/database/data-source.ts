@@ -1,14 +1,14 @@
-import { CategorySchema } from 'src/home/entities/category.entity';
-import { HomeSchema } from 'src/home/entities/home.entity';
-import { HomeImageSchema } from 'src/home/entities/homeImage.entity';
 import { ReviewSchema } from 'src/reviews/review.entity';
-import { UserSchema } from 'src/user/user.entity';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 import * as process from 'process';
 import { OrderSchema } from 'src/order/order.entity';
 import { NotificationSchema } from 'src/notification/notification.entity';
-import { CouponSchema } from "../coupon/coupon.entity";
+import { HomeSchema } from 'src/modules/home/entities/home.entity';
+import { HomeImageSchema } from 'src/modules/home/entities/homeImage.entity';
+import { CategorySchema } from 'src/modules/home/entities/category.entity';
+import { CouponSchema } from 'src/modules/coupon/coupon.entity';
+import { UserSchema } from '../user/user.entity';
 dotenv.config();
 
 export const dataSourceOptions: DataSourceOptions = {
@@ -29,6 +29,7 @@ export const dataSourceOptions: DataSourceOptions = {
     CouponSchema,
   ],
   migrations: ['dist/migrations/*.js'],
+  logger: 'file',
 };
 
 const dataSource = new DataSource(dataSourceOptions);

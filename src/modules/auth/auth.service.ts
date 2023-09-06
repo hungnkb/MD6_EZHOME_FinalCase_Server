@@ -1,14 +1,13 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
-import { CreateWithGoogleUserDto, changePasswordDto } from 'src/user/user.dto';
 import { Repository } from 'typeorm';
-import { UserSchema } from 'src/user/user.entity';
-import * as process from 'process';
 import { ConfigService } from '@nestjs/config';
-const mailer = require('../shared/ulti/mail/mailer');
+import { accessTokenDto, accessTokenPayloadDto } from './auth.dto';
+import { UserService } from '../user/user.service';
+import { UserSchema } from '../user/user.entity';
+import { CreateWithGoogleUserDto, changePasswordDto } from '../user/user.dto';
+const mailer = require('../../shared/ulti/mail/mailer');
 export type User = any;
 
 @Injectable()
@@ -21,13 +20,13 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async login(body): Promise<Object> {
+  async login(body): Promise<accessTokenDto> {
     const { email, password } = body;
 
-    let user = await this.userService.findByKeyword(email);
+    const user = await this.userService.findByKeyword(email);
     if (!user)
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-    let isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
       const payload = {
         email: user.email,
@@ -42,10 +41,12 @@ export class AuthService {
     throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
   }
 
-  async loginWithGoogle(body: CreateWithGoogleUserDto): Promise<Object> {
-    let email = body.email;
+  async loginWithGoogle(
+    body: CreateWithGoogleUserDto,
+  ): Promise<accessTokenDto> {
+    const email = body.email;
     try {
-      let user = await this.userService.findByKeyword(email);
+      const user = await this.userService.findByKeyword(email);
       if (user) {
         const payload = {
           email: user.email,
@@ -53,13 +54,13 @@ export class AuthService {
           sub: user.idUser,
           active: user.active,
         };
-        let accessToken = await this.assignToken(payload);
+        const accessToken = await this.assignToken(payload);
         return { accessToken };
       }
     } catch {
-      let newUser = await this.userService.createWithGoogle(body);
+      const newUser = await this.userService.createWithGoogle(body);
       if (newUser) {
-        let returnUser = await this.userService.findByKeyword(email);
+        const returnUser = await this.userService.findByKeyword(email);
         const payload = {
           email: returnUser.email,
           role: returnUser.role,
@@ -78,15 +79,15 @@ export class AuthService {
               `<a href="http://localhost:3002/api/v1/users/active?email=${returnUser.email}&token=${hashedEmail}"> Active your account here </a>`,
             );
           });
-        let accessTokenWithNewUser = await this.assignToken(payload);
-        return { accessTokenWithNewUser };
+        const accessTokenWithNewUser = await this.assignToken(payload);
+        return { accessToken: accessTokenWithNewUser };
       }
     }
   }
 
-  async changePassword(body: changePasswordDto): Promise<Object> {
+  async changePassword(body: changePasswordDto): Promise<UserSchema> {
     const { email, currentPassword, newPassword } = body;
-    let user = await this.userService.findByKeyword(email);
+    const user = await this.userService.findByKeyword(email);
     const isMatch = await this.verifyPassword(currentPassword, user.password);
     if (isMatch) {
       const saltOrRounds = 10;
@@ -104,11 +105,14 @@ export class AuthService {
   //   return req;
   // }
 
-  async returnAccessToken(payload: Object): Promise<Object> {
-    return { accessToken: this.assignToken(payload) };
+  async returnAccessToken(
+    payload: accessTokenPayloadDto,
+  ): Promise<accessTokenDto> {
+    const accessToken = await this.assignToken(payload);
+    return { accessToken };
   }
 
-  async assignToken(payload: Object): Promise<string> {
+  async assignToken(payload: accessTokenPayloadDto): Promise<string> {
     const token = await this.jwtService.signAsync(payload);
     const bearerToken = 'Bearer ' + token;
     return bearerToken;

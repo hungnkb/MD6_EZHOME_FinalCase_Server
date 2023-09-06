@@ -1,0 +1,13 @@
+.vscode
+/node_modules
+
+.eslintrc.js
+.prettierrc
+.prettierignore
+.prettierrc.json
+
+Dockerfile
+docker-compose.yml
+.git
+
+*.log

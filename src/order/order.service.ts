@@ -2,9 +2,9 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { OrderSchema } from 'src/order/order.entity';
 import { CreateOrderDto } from 'src/order/order.dto';
 import { Repository } from 'typeorm';
-import { HomeService } from 'src/home/home.service';
-import { plainToClass, classToPlain } from 'class-transformer';
+import { classToPlain } from 'class-transformer';
 import { OrderStatus } from 'src/order/order.entity';
+import { HomeService } from 'src/modules/home/home.service';
 
 @Injectable()
 export class OrderService {
@@ -12,15 +12,19 @@ export class OrderService {
     @Inject('ORDER_REPOSITORY')
     private orderRepository: Repository<OrderSchema>,
     private homeService: HomeService,
-  ) { }
+  ) {}
 
-  async create(body: CreateOrderDto): Promise<Object> {
+  async create(body: CreateOrderDto): Promise<CreateOrderDto> {
     const checkOrderByOwner = await this.isOrderByOwner(
       body.idHome,
       body.idUser,
     );
 
-    const isHomeAvailable = await this.isHomeAvailableByDate(body.idHome, body.checkin, body.checkout)
+    const isHomeAvailable = await this.isHomeAvailableByDate(
+      body.idHome,
+      body.checkin,
+      body.checkout,
+    );
 
     if (checkOrderByOwner && isHomeAvailable) {
       return this.orderRepository.save(body);
@@ -46,10 +50,13 @@ export class OrderService {
       .andWhere('orders.status = "ongoing"')
       .andWhere('orders.checkout >= CAST(:checkin as date)', { checkin })
       .andWhere('orders.checkout <= CAST(:checkout as date)', { checkout })
-      .getMany();    
-    if ((method1.length + method2.length) > 0) {
-      throw new HttpException('Theses dates are not available', HttpStatus.BAD_REQUEST)
-    } 
+      .getMany();
+    if (method1.length + method2.length > 0) {
+      throw new HttpException(
+        'Theses dates are not available',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return true;
   }
 
@@ -65,7 +72,7 @@ export class OrderService {
     return idOwner;
   }
 
-  async findAll(): Promise<Object> {
+  async findAll(): Promise<Array<OrderSchema>> {
     return this.orderRepository
       .createQueryBuilder('orders')
       .select(['orders', 'users.idUser.fullName', 'users.idUser.idUser'])
@@ -84,7 +91,10 @@ export class OrderService {
       .getOne();
   }
 
-  async findByIdUser(idUser: string, status: string): Promise<Object> {
+  async findByIdUser(
+    idUser: string,
+    status: string,
+  ): Promise<Array<OrderSchema>> {
     if (status) {
       return this.orderRepository
         .createQueryBuilder('orders')
@@ -111,7 +121,7 @@ export class OrderService {
     }
   }
 
-  async findByIdHome(idHome: number): Promise<Object> {
+  async findByIdHome(idHome: number): Promise<Array<OrderSchema>> {
     return this.orderRepository
       .createQueryBuilder('orders')
       .where({ idHome })
@@ -121,7 +131,7 @@ export class OrderService {
       .getMany();
   }
 
-  async findByKeyword(keyword): Promise<Object> {
+  async findByKeyword(keyword): Promise<Array<OrderSchema>> {
     if (keyword.idOrder) {
       return this.findByIdOrder(keyword.idOrder);
     } else if (keyword.idUser) {
@@ -135,15 +145,15 @@ export class OrderService {
   async updateOrderCharge(
     idOrder: number,
     addCharged: number,
-  ): Promise<Object> {
+  ): Promise<OrderSchema> {
     const order = await this.orderRepository.findOneByOrFail({ idOrder });
     order.status = OrderStatus._DONE;
     order.charged = order.charged + addCharged;
     return this.orderRepository.save(order);
   }
 
-  async updateOrderStatus(idOrder: number, newStatus: string): Promise<any> {
-    let order = await this.findByIdOrder(idOrder);
+  async updateOrderStatus(idOrder: number): Promise<any> {
+    const order = await this.findByIdOrder(idOrder);
     const now = new Date().toJSON().toString();
     const dateNow = now.substring(8, 10);
     const monthNow = now.substring(5, 7);
@@ -207,8 +217,6 @@ export class OrderService {
         )
         .getRawOne();
     } else {
-      const getMonth = new Date();
-      const currentMonth = getMonth.getMonth() + 1;
       const getYear = new Date().getFullYear();
       return this.orderRepository
         .createQueryBuilder('orders')

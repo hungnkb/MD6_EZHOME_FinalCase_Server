@@ -1,17 +1,15 @@
-
 import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
   OneToMany,
   Column,
-  Entity
-} from "typeorm";
-import { UserSchema } from "../user/user.entity";
-import { HomeSchema } from "src/home/entities/home.entity";
+  Entity,
+} from 'typeorm';
+import { HomeSchema } from 'src/modules/home/entities/home.entity';
+import { UserSchema } from '../user/user.entity';
 
-
-@Entity({ name: "coupons" })
+@Entity({ name: 'coupons' })
 export class CouponSchema {
   @PrimaryGeneratedColumn()
   idCoupon: number;
@@ -19,13 +17,13 @@ export class CouponSchema {
   @Column({ nullable: false })
   couponname: string;
 
-  @Column({ type: "date", nullable: true })
+  @Column({ type: 'date', nullable: true })
   createDate: Date;
 
-  @Column({ type: "date", nullable: false })
+  @Column({ type: 'date', nullable: false })
   startDate: Date;
 
-  @Column({ type: "date", nullable: false })
+  @Column({ type: 'date', nullable: false })
   endDate: Date;
 
   @Column({ nullable: false })
@@ -34,17 +32,15 @@ export class CouponSchema {
   @Column({ nullable: true, default: false })
   isDeleted: boolean;
 
-  @OneToMany((type) => HomeSchema, (homes) => homes.idCoupon, {
-    onDelete: 'CASCADE'
+  @OneToMany(() => HomeSchema, (homes) => homes.idCoupon, {
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'home', referencedColumnName: 'idHome' })
-  home: HomeSchema[]
+  home: HomeSchema[];
 
-  @ManyToOne((type) => UserSchema, (users) => users.idUser, {
-    onDelete: 'CASCADE'
+  @ManyToOne(() => UserSchema, (users) => users.idUser, {
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'user', referencedColumnName: 'idUser' })
-  user: number
-
+  user: number;
 }
-

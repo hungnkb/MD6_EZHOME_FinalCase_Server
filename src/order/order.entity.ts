@@ -1,14 +1,12 @@
-import { UserSchema } from 'src/user/user.entity';
+import { HomeSchema } from 'src/modules/home/entities/home.entity';
+import { UserSchema } from 'src/modules/user/user.entity';
 import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
-import { HomeImageSchema } from '../home/entities/homeImage.entity';
-import { HomeSchema } from '../home/entities/home.entity';
 
 export enum OrderStatus {
   _ONGOING = 'ongoing',
@@ -41,11 +39,11 @@ export class OrderSchema {
   })
   status: string;
 
-  @ManyToOne((type) => UserSchema, (users) => users.idUser)
+  @ManyToOne(() => UserSchema, (users) => users.idUser)
   @JoinColumn({ name: 'user', referencedColumnName: 'idUser' })
   idUser: number;
 
-  @ManyToOne((type) => HomeSchema, (homes) => homes.idHome)
+  @ManyToOne(() => HomeSchema, (homes) => homes.idHome)
   @JoinColumn({ name: 'home', referencedColumnName: 'idHome' })
   idHome: number;
 }

@@ -1,14 +1,13 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateHomeDto } from './dto/home.dto';
-import { UserSchema } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
-import { UserService } from 'src/user/user.service';
 import { HomeSchema } from './entities/home.entity';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/modules/cloudinary/cloudinary.service';
 import { HomeImageSchema } from './entities/homeImage.entity';
-import { CouponService } from 'src/coupon/coupon.service';
-import { plainToClass, classToPlain } from 'class-transformer';
+import { CouponService } from 'src/modules/coupon/coupon.service';
+import { classToPlain } from 'class-transformer';
 import { HttpStatusCode } from 'axios';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class HomeService {
@@ -20,9 +19,9 @@ export class HomeService {
     private userService: UserService,
     private cloudinaryService: CloudinaryService,
     private couponService: CouponService,
-  ) { }
+  ) {}
 
-  async create(body: CreateHomeDto): Promise<Object> {
+  async create(body: CreateHomeDto): Promise<HomeSchema> {
     const {
       title,
       price,
@@ -35,28 +34,21 @@ export class HomeService {
       files,
     } = body;
 
-    let user = await this.userService.findByKeyword(email);
+    const user = await this.userService.findByKeyword(email);
 
     if (!user || user.role != 'host') {
       throw new HttpException('Unauthorized', HttpStatus.BAD_REQUEST);
     }
-
-    let newHome = await this.homeRepository
-      .createQueryBuilder()
-      .insert()
-      .into(HomeSchema)
-      .values({
-        title,
-        price,
-        address,
-        bathrooms,
-        bedrooms,
-        description,
-        idCategory: parseInt(idCategory),
-        idUser: user.idUser,
-      })
-      .execute();
-
+    const newHome = new HomeSchema();
+    newHome.title = title;
+    newHome.price = price;
+    newHome.address = address;
+    newHome.bathrooms = bathrooms;
+    newHome.bedrooms = bedrooms;
+    newHome.description = description;
+    newHome.idCategory = Number(idCategory);
+    newHome.idUser = user.idUser;
+    const newHomeSaved = await newHome.save();
     for (let i = 0; i < files.length; i++) {
       this.homeImageRepository
         .createQueryBuilder()
@@ -64,7 +56,7 @@ export class HomeService {
         .into(HomeImageSchema)
         .values({
           urlHomeImage: files[i],
-          idHome: newHome.identifiers[0].idHome,
+          idHome: newHomeSaved,
         })
         .execute();
     }
@@ -72,10 +64,10 @@ export class HomeService {
     return newHome;
   }
 
-  async uploadImage(files: Array<Express.Multer.File>): Promise<Object> {
-    let newFiles = [];
+  async uploadImage(files: Array<Express.Multer.File>) {
+    const newFiles = [];
     for (let i = 0; i < files.length; i++) {
-      let newFile = await this.cloudinaryService.uploadImage(files[i]);
+      const newFile = await this.cloudinaryService.uploadImage(files[i]);
       if (newFile) {
         newFiles.push(newFile);
       }
@@ -114,7 +106,7 @@ export class HomeService {
         'coupons.isDeleted',
         'orders.checkin',
         'orders.checkout',
-        'homes.idCoupon'
+        'homes.idCoupon',
       ])
       .leftJoin('homes.idUser', 'users')
       .leftJoin('homes.idCategory', 'categories')
@@ -309,7 +301,7 @@ export class HomeService {
     }
   }
 
-  async getTop(top: string): Promise<any> {
+  async getTop(): Promise<any> {
     return this.homeRepository
       .createQueryBuilder('homes')
       .leftJoin('homes.orders', 'orders')
@@ -338,7 +330,7 @@ export class HomeService {
 
   async updatePrice({ price, idHome }) {
     console.log(price, idHome);
-    return this.homeRepository.update({ idHome }, { price })
+    return this.homeRepository.update({ idHome }, { price });
   }
 
   async updateCoupon(body: any) {
@@ -348,16 +340,20 @@ export class HomeService {
 
       const dateNow = new Date();
       const now = dateNow.getTime();
-      const startDate = new Date(couponObj.startDate);
-      const start = startDate.getTime();
       const endDate = new Date(couponObj.endDate);
       const end = endDate.getTime();
       if (now > end) {
-        throw new HttpException('Coupon is expired', HttpStatus.BAD_REQUEST,);
+        throw new HttpException('Coupon is expired', HttpStatus.BAD_REQUEST);
       }
-      await this.homeRepository.update({ idHome: body.idHome }, { idCoupon: body.idCoupon });
+      await this.homeRepository.update(
+        { idHome: body.idHome },
+        { idCoupon: body.idCoupon },
+      );
     } else {
-      await this.homeRepository.update({ idHome: body.idHome }, { idCoupon: null })
+      await this.homeRepository.update(
+        { idHome: body.idHome },
+        { idCoupon: null },
+      );
     }
     return HttpStatusCode.Accepted;
   }

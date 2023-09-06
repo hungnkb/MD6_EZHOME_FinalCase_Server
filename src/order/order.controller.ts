@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { CreateOrderDto } from 'src/order/order.dto';
 import { OrderService } from './order.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/modules/auth/auth.guard';
+import { ApiParam } from '@nestjs/swagger';
 
 @Controller()
 export class OrderController {
@@ -30,9 +31,13 @@ export class OrderController {
     return this.orderService.findByKeyword(keyword);
   }
 
+  @ApiParam({
+    type: 'number',
+    name: 'orderId',
+  })
   @Patch(':idOrder')
-  updateStatus(@Param() param: any, @Query() query: any): Promise<any> {
-    return this.orderService.updateOrderStatus(param.idOrder, query.status);
+  updateStatus(@Param() param: any): Promise<any> {
+    return this.orderService.updateOrderStatus(param.idOrder);
   }
 
   @UseGuards(AuthGuard)

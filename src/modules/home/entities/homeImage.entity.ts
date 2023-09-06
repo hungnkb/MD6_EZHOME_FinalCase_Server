@@ -18,7 +18,7 @@ export class HomeImageSchema {
   })
   urlHomeImage: string;
 
-  @ManyToOne((type) => HomeSchema, (homes) => homes.idHome)
+  @ManyToOne(() => HomeSchema, (homes) => homes.idHome)
   @JoinColumn({ name: 'idHome', referencedColumnName: 'idHome' })
   idHome: HomeSchema;
 }

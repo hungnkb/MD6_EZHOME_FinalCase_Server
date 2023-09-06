@@ -1,6 +1,6 @@
-import {IsNotEmpty} from "class-validator";
+import { IsNotEmpty } from 'class-validator';
 
-export class CreateCouponDto{
+export class CreateCouponDto {
   createDate: Date;
 
   @IsNotEmpty()
@@ -18,10 +18,9 @@ export class CreateCouponDto{
   @IsNotEmpty()
   couponname: string;
 }
-export class UpdateCouponDto{
-  idCoupon : number
-  couponname: string
-  startDate: Date
-  enddate:Date
-
+export class UpdateCouponDto {
+  idCoupon: number;
+  couponname: string;
+  startDate: Date;
+  enddate: Date;
 }

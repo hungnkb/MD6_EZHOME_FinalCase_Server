@@ -1,15 +1,13 @@
-// @ts-ignore
 import { Module } from '@nestjs/common/decorators';
-import { DatabaseModule } from 'src/database/database.module';
-import { AuthController } from '../../auth/auth.controller';
-import { AuthService } from '../../auth/auth.service';
-import { databaseProviders } from 'src/database/database.providers';
+import { DatabaseModule } from 'src/modules/database/database.module';
+import { AuthController } from './auth.controller';
+import { databaseProviders } from 'src/modules/database/database.providers';
 import { UserModule } from 'src/modules/user/user.module';
-import { UserService } from 'src/user/user.service';
-import { UserProvider } from 'src/user/user.provider';
-// @ts-ignore
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../../auth/constants';
+import { AuthService } from './auth.service';
+import { jwtConstants } from './constants';
+import { UserService } from '../user/user.service';
+import { UserProvider } from '../user/user.provider';
 
 @Module({
   imports: [

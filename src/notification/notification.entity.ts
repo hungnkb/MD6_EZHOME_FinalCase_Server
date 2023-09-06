@@ -1,4 +1,4 @@
-import { UserSchema } from 'src/user/user.entity';
+import { UserSchema } from '../modules/user/user.entity';
 import {
   Column,
   Entity,
@@ -34,7 +34,7 @@ export class NotificationSchema {
   })
   status: string;
 
-  @ManyToOne((type) => UserSchema, (users) => users.idUser, {
+  @ManyToOne(() => UserSchema, (users) => users.idUser, {
     cascade: true,
     onDelete: 'CASCADE',
   })

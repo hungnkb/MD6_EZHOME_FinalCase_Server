@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { CouponSchema } from 'src/coupon/coupon.entity';
+import { CouponSchema } from 'src/modules/coupon/coupon.entity';
 
 export const CouponProvider = [
   {

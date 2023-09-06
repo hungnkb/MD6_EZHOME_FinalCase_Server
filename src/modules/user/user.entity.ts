@@ -1,7 +1,6 @@
 import { NotificationSchema } from 'src/notification/notification.entity';
 import { OrderSchema } from 'src/order/order.entity';
 import { ReviewSchema } from 'src/reviews/review.entity';
-import { CouponSchema } from "../coupon/coupon.entity";
 
 import {
   Column,
@@ -10,6 +9,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CouponSchema } from '../coupon/coupon.entity';
 
 export enum UserRole {
   _ADMIN = 'admin',
@@ -53,16 +53,16 @@ export class UserSchema {
   })
   role: UserRole;
 
-  @OneToMany((type) => OrderSchema, (orders) => orders.idOrder)
+  @OneToMany(() => OrderSchema, (orders) => orders.idOrder)
   @JoinColumn({ name: 'orders', referencedColumnName: 'idOrder' })
   orders: OrderSchema[];
 
-  @OneToMany((type) => ReviewSchema, (reviews) => reviews.idReview)
+  @OneToMany(() => ReviewSchema, (reviews) => reviews.idReview)
   @JoinColumn({ name: 'reviews', referencedColumnName: 'idReview' })
   reviews: ReviewSchema[];
 
   @OneToMany(
-    (type) => NotificationSchema,
+    () => NotificationSchema,
     (notifications) => notifications.idNotification,
     {
       cascade: true,
@@ -72,11 +72,9 @@ export class UserSchema {
   @JoinColumn({ name: 'notifications', referencedColumnName: 'idNotification' })
   notifications: NotificationSchema[];
 
-  @OneToMany((type) => CouponSchema, (coupons) => coupons.idCoupon, {
-    cascade: true
+  @OneToMany(() => CouponSchema, (coupons) => coupons.idCoupon, {
+    cascade: true,
   })
   @JoinColumn({ name: 'coupons', referencedColumnName: 'idCoupon' })
   coupons: CouponSchema[];
 }
-
-

@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import * as process from 'process';
 dotenv.config();
 
-module.exports = {
+export const mailConfig = {
   MAILER: process.env.MAIL_MAILER,
   HOST: process.env.MAIL_HOST,
   PORT: process.env.MAIL_PORT,

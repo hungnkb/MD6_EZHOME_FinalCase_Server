@@ -1,14 +1,14 @@
 import { ConfigService } from '@nestjs/config';
-import { CategorySchema } from 'src/home/entities/category.entity';
-import { HomeSchema } from 'src/home/entities/home.entity';
-import { HomeImageSchema } from 'src/home/entities/homeImage.entity';
-import { UserSchema } from 'src/user/user.entity';
 import { DataSource } from 'typeorm';
 import 'reflect-metadata';
 import { ReviewSchema } from 'src/reviews/review.entity';
 import { OrderSchema } from 'src/order/order.entity';
 import { NotificationSchema } from 'src/notification/notification.entity';
-import { CouponSchema } from "../coupon/coupon.entity";
+import { HomeSchema } from 'src/modules/home/entities/home.entity';
+import { HomeImageSchema } from 'src/modules/home/entities/homeImage.entity';
+import { CategorySchema } from 'src/modules/home/entities/category.entity';
+import { CouponSchema } from 'src/modules/coupon/coupon.entity';
+import { UserSchema } from '../user/user.entity';
 
 export const databaseProviders = [
   {
@@ -30,7 +30,7 @@ export const databaseProviders = [
           CategorySchema,
           OrderSchema,
           NotificationSchema,
-          CouponSchema
+          CouponSchema,
         ],
         synchronize: false,
         migrations: ['dist/migrations/*.js'],
